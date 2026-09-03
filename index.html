@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أبو سلطان - ناسخ ملفات حماية الأجور (WPS)</title>
-    <!-- مكتبة ضغط الملفات للتعامل مع الجوالات بدون أخطاء -->
+    <!-- مكتبة ضغط الملفات -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; direction: rtl; text-align: center; padding: 20px; }
@@ -18,8 +18,9 @@
         label { background: #4a5568; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: inline-block; }
         .controls { margin: 20px 0; display: flex; justify-content: center; align-items: center; gap: 10px; }
         input[type="number"] { width: 70px; padding: 8px; border: 1px solid #cbd5e0; border-radius: 6px; text-align: center; font-size: 16px; }
-        button { background: #2b6cb0; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        button { background: #2b6cb0; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
         button:hover { background: #2c5282; }
+        .success-msg { display: none; background: #c6f6d5; color: #22543d; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 15px; border: 1px solid #9ae6b4; }
         .info-box { background: #ebf8ff; border: 1px solid #bee3f8; padding: 12px; border-radius: 6px; font-size: 14px; margin-top: 15px; text-align: right; }
         .contact-box { margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 14px; color: #4a5568; }
         .whatsapp-btn { color: #25D366; text-decoration: none; font-weight: bold; font-size: 18px; display: inline-block; margin-top: 8px; direction: ltr; }
@@ -46,11 +47,16 @@
         <input type="number" id="copyCount" value="10" min="1" max="50">
     </div>
 
-    <button onclick="duplicateWPS()">تكرار الملفات وتحميل المجلد (ZIP)</button>
+    <button id="submitBtn" onclick="duplicateWPS()">تكرار الملفات وتحميل المجلد (ZIP)</button>
+
+    <!-- رسالة التأكيد بعد التنسيخ -->
+    <div id="successMsg" class="success-msg">
+        ✅ تم تكرار الملفات وتحميل المجلد بنجاح!
+    </div>
 
     <div class="info-box">
         <b>🔒 معالجة آمنة:</b> تتم العملية بالكامل داخل جهازك لضمان الخصوصية.<br>
-        <b>✅ الحفاظ على التوقيع:</b> يتم نسخ المحتوى مع إضافة الترقيم `_1`, `_2` لكل ملف داخل مجلد مضغوط لضمان دقة التسمية.
+        <b>✅ الحفاظ على التوقيع:</b> يتم نسخ المحتوى مع إضافة الترقيم `_1`, `_2` لكل ملف داخل مجلد مضغوط.
     </div>
 
     <div class="contact-box">
@@ -64,17 +70,23 @@ function updateFileName() {
     const fileInput = document.getElementById('fileInput');
     if (fileInput.files.length > 0) {
         document.getElementById('fileName').innerText = fileInput.files[0].name;
+        document.getElementById('successMsg').style.display = 'none';
     }
 }
 
 function duplicateWPS() {
     const fileInput = document.getElementById('fileInput');
     const copyCount = parseInt(document.getElementById('copyCount').value);
+    const successMsg = document.getElementById('successMsg');
+    const btn = document.getElementById('submitBtn');
 
     if (!fileInput.files.length) {
         alert('الرجاء اختيار ملف WPS أولاً!');
         return;
     }
+
+    btn.innerText = "جاري النسخ والضغط...";
+    btn.disabled = true;
 
     const file = fileInput.files[0];
     const reader = new FileReader();
@@ -90,18 +102,21 @@ function duplicateWPS() {
         let baseName = lastDotIndex !== -1 ? fullName.substring(0, lastDotIndex) : fullName;
         let ext = lastDotIndex !== -1 ? fullName.substring(lastDotIndex) : '.txt';
 
-        // إنشاء جميع الملفات بترقيم صريح ودقيق داخل مجلد ZIP
         for (let i = 1; i <= copyCount; i++) {
             let newFileName = `${baseName}_${i}${ext}`;
             zip.file(newFileName, arrayBuffer);
         }
 
-        // تنزيل الملف المضغوط بضغطة واحدة
         zip.generateAsync({type:"blob"}).then(function(content) {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(content);
             link.download = `${baseName}_النسخ.zip`;
             link.click();
+
+            // إظهار رسالة "تم"
+            btn.innerText = "تكرار الملفات وتحميل المجلد (ZIP)";
+            btn.disabled = false;
+            successMsg.style.display = 'block';
         });
     };
 }
