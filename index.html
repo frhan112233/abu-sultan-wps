@@ -20,7 +20,7 @@
         button:hover { background: #2c5282; }
         .info-box { background: #ebf8ff; border: 1px solid #bee3f8; padding: 12px; border-radius: 6px; font-size: 14px; margin-top: 15px; text-align: right; }
         .contact-box { margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 14px; color: #4a5568; }
-        .contact-box a { color: #2b6cb0; text-decoration: none; font-weight: bold; }
+        .whatsapp-btn { color: #25D366; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -52,7 +52,8 @@
     </div>
 
     <div class="contact-box">
-        📞 للتواصل والدعم الفني: <a href="tel:0581158968">0581158968</a>
+        💬 للتواصل والدعم الفني عبر واتساب:<br>
+        <a href="https://wa.me/966581158968" target="_blank" class="whatsapp-btn">📱 0581158968</a>
     </div>
 </div>
 
@@ -81,14 +82,18 @@ function duplicateWPS() {
     reader.onload = function(e) {
         const arrayBuffer = e.target.result;
         
-        let baseName = file.name.substring(0, file.name.lastIndexOf('.'));
-        let ext = file.name.substring(file.name.lastIndexOf('.'));
+        let fullName = file.name;
+        let lastDotIndex = fullName.lastIndexOf('.');
+        
+        let baseName = lastDotIndex !== -1 ? fullName.substring(0, lastDotIndex) : fullName;
+        let ext = lastDotIndex !== -1 ? fullName.substring(lastDotIndex) : '.txt';
 
         for (let i = 1; i <= copyCount; i++) {
             const blob = new Blob([arrayBuffer], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             
+            // إضافة الرقم تسلسلياً لاسم الملف الأصلي
             link.download = `${baseName}_${i}${ext}`;
             
             setTimeout(() => {
