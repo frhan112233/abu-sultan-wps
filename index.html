@@ -20,7 +20,7 @@
         button:hover { background: #2c5282; }
         .info-box { background: #ebf8ff; border: 1px solid #bee3f8; padding: 12px; border-radius: 6px; font-size: 14px; margin-top: 15px; text-align: right; }
         .contact-box { margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 14px; color: #4a5568; }
-        .whatsapp-btn { color: #25D366; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block; margin-top: 5px; }
+        .whatsapp-btn { color: #25D366; text-decoration: none; font-weight: bold; font-size: 18px; display: inline-block; margin-top: 8px; direction: ltr; }
     </style>
 </head>
 <body>
@@ -53,7 +53,7 @@
 
     <div class="contact-box">
         💬 للتواصل والدعم الفني عبر واتساب:<br>
-        <a href="https://wa.me/966581158968" target="_blank" class="whatsapp-btn">📱 0581158968</a>
+        <a href="https://api.whatsapp.com/send?phone=966581158968" target="_blank" class="whatsapp-btn">📱 0581158968</a>
     </div>
 </div>
 
@@ -85,6 +85,7 @@ function duplicateWPS() {
         let fullName = file.name;
         let lastDotIndex = fullName.lastIndexOf('.');
         
+        // استخراج اسم الملف بدون الامتداد، والامتداد بشكل منفصل
         let baseName = lastDotIndex !== -1 ? fullName.substring(0, lastDotIndex) : fullName;
         let ext = lastDotIndex !== -1 ? fullName.substring(lastDotIndex) : '.txt';
 
@@ -93,12 +94,13 @@ function duplicateWPS() {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             
-            // إضافة الرقم تسلسلياً لاسم الملف الأصلي
+            // إضافة الرقم إلى اسم الملف الأصلي والحفاظ على امتداد .txt
+            // مثال: W_20260903_1.txt ، W_20260903_2.txt
             link.download = `${baseName}_${i}${ext}`;
             
             setTimeout(() => {
                 link.click();
-            }, i * 250);
+            }, i * 300);
         }
     };
 }
