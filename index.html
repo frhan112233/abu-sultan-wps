@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أبو سلطان - ناسخ ملفات حماية الأجور (WPS)</title>
+    <!-- مكتبة ضغط الملفات للتعامل مع الجوالات بدون أخطاء -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; direction: rtl; text-align: center; padding: 20px; }
         .card { background: white; max-width: 500px; margin: auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -44,11 +46,11 @@
         <input type="number" id="copyCount" value="10" min="1" max="50">
     </div>
 
-    <button onclick="duplicateWPS()">تكرار الملفات وتحميلها فوراً</button>
+    <button onclick="duplicateWPS()">تكرار الملفات وتحميل المجلد (ZIP)</button>
 
     <div class="info-box">
         <b>🔒 معالجة آمنة:</b> تتم العملية بالكامل داخل جهازك لضمان الخصوصية.<br>
-        <b>✅ الحفاظ على التوقيع:</b> يتم نسخ المحتوى بالكامل دون تعديل حمايةً للتوقيع الرقمي للملفات.
+        <b>✅ الحفاظ على التوقيع:</b> يتم نسخ المحتوى مع إضافة الترقيم `_1`, `_2` لكل ملف داخل مجلد مضغوط لضمان دقة التسمية.
     </div>
 
     <div class="contact-box">
@@ -81,27 +83,26 @@ function duplicateWPS() {
 
     reader.onload = function(e) {
         const arrayBuffer = e.target.result;
+        const zip = new JSZip();
         
         let fullName = file.name;
         let lastDotIndex = fullName.lastIndexOf('.');
-        
-        // استخراج اسم الملف بدون الامتداد، والامتداد بشكل منفصل
         let baseName = lastDotIndex !== -1 ? fullName.substring(0, lastDotIndex) : fullName;
         let ext = lastDotIndex !== -1 ? fullName.substring(lastDotIndex) : '.txt';
 
+        // إنشاء جميع الملفات بترقيم صريح ودقيق داخل مجلد ZIP
         for (let i = 1; i <= copyCount; i++) {
-            const blob = new Blob([arrayBuffer], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            
-            // إضافة الرقم إلى اسم الملف الأصلي والحفاظ على امتداد .txt
-            // مثال: W_20260903_1.txt ، W_20260903_2.txt
-            link.download = `${baseName}_${i}${ext}`;
-            
-            setTimeout(() => {
-                link.click();
-            }, i * 300);
+            let newFileName = `${baseName}_${i}${ext}`;
+            zip.file(newFileName, arrayBuffer);
         }
+
+        // تنزيل الملف المضغوط بضغطة واحدة
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = `${baseName}_النسخ.zip`;
+            link.click();
+        });
     };
 }
 </script>
