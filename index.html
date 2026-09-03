@@ -7,7 +7,10 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; direction: rtl; text-align: center; padding: 20px; }
         .card { background: white; max-width: 500px; margin: auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #1a365d; font-size: 24px; margin-bottom: 20px; }
+        .brand-header { background: #1a365d; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .brand-header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .brand-header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; }
+        h2 { color: #2d3748; font-size: 18px; margin-bottom: 15px; }
         .upload-area { border: 2px dashed #cbd5e0; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #faf5ff; }
         input[type="file"] { display: none; }
         label { background: #4a5568; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: inline-block; }
@@ -21,10 +24,15 @@
 <body>
 
 <div class="card">
-    <h1>📑 ناسخ ملفات حماية الأجور (WPS)</h1>
+    <div class="brand-header">
+        <h1>أبو سلطان</h1>
+        <p>خدمات وتسهيل أعمال حماية الأجور (WPS)</p>
+    </div>
+
+    <h2>📄 ناسخ ملفات حماية الأجور (WPS)</h2>
     
     <div class="upload-area">
-        <p id="fileName">اختر ملف WPS بصيغة TXT</p>
+        <p id="fileName">اختر ملف WPS الموقّع بصيغة TXT</p>
         <label for="fileInput">اختيار ملف</label>
         <input type="file" id="fileInput" accept=".txt" onchange="updateFileName()">
     </div>
@@ -37,11 +45,11 @@
     <button onclick="duplicateWPS()">تكرار الملفات وتحميلها فوراً</button>
 
     <div class="info-box">
-        <b>✅ المميزات التلقائية:</b>
+        <b>✅ الحفاظ على سلامة التوقيع الرقمي:</b>
         <ul>
-            <li>تحديث الرقم المرجعي فريد لكل نسخة لضمان القبول في <b>مدد</b>.</li>
-            <li>تسمية الملفات تلقائياً (_1, _2, _3...).</li>
-            <li>ضبط الترميز المعتمد (UTF-8 with BOM & Windows CRLF).</li>
+            <li>نسخ كامل للمحتوى بدون تعديل حمايةً للتوقيع الرقمي المعتمد.</li>
+            <li>تسمية النسخ بأسماء متسلسلة لتمييزها فور التحميل.</li>
+            <li>الحفاظ على ترميز UTF-8 with BOM وWindows CRLF المتوافق مع مدد والبنوك.</li>
         </ul>
     </div>
 </div>
@@ -66,50 +74,26 @@ function duplicateWPS() {
     const file = fileInput.files[0];
     const reader = new FileReader();
 
+    reader.readAsArrayBuffer(file);
+
     reader.onload = function(e) {
-        let originalContent = e.target.result;
+        const arrayBuffer = e.target.result;
         
-        // توحيد الأسطر أولاً
-        let lines = originalContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+        let baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+        let ext = file.name.substring(file.name.lastIndexOf('.'));
 
-        if (lines.length === 0) {
-            alert('الملف فارغ!');
-            return;
-        }
-
-        // إنشاء وتنزيل النسخ المحددة
         for (let i = 1; i <= copyCount; i++) {
-            let modifiedLines = [...lines];
-            let headerParts = modifiedLines[0].split(',');
-
-            // تعديل الرقم المرجعي في السطر الأول لضمان تجاوز فحص مدد
-            if (headerParts.length > 1) {
-                let randomID = Math.floor(100000 + Math.random() * 900000);
-                headerParts[0] = headerParts[0] + "_" + randomID;
-                modifiedLines[0] = headerParts.join(',');
-            }
-
-            // إعادة تجميع النص مع صيغة أسطر Windows CRLF
-            let newContent = modifiedLines.join('\r\n');
-
-            // إعداد الملف بالترميز الصحيح UTF-8 with BOM
-            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-            const blob = new Blob([bom, newContent], { type: 'text/plain;charset=utf-8' });
-
-            // تنزيل الملف باسم متسلسل
+            const blob = new Blob([arrayBuffer], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             
-            let baseName = file.name.substring(0, file.name.lastIndexOf('.'));
-            link.download = `${baseName}_${i}.txt`;
+            link.download = `${baseName}_${i}${ext}`;
             
             setTimeout(() => {
                 link.click();
-            }, i * 200); // فاصل زمني بسيط بين التنزيلات
+            }, i * 250);
         }
     };
-
-    reader.readAsText(file);
 }
 </script>
 
