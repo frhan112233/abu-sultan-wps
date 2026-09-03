@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نسخ ملف TXT</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Arabic",Arial,sans-serif;background:linear-gradient(145deg,#0b1220,#172554);color:#fff;min-height:100vh;padding:14px}
+  .wrap{max-width:560px;margin:auto}
+  .card{background:rgba(255,255,255,.09);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:18px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+  h1{margin:0 0 8px;font-size:28px}
+  .sub{color:#cbd5e1;margin:0 0 22px}
+  label{display:block;margin:16px 0 8px;font-weight:700}
+  input[type=file],input[type=text]{width:100%;padding:15px;border-radius:14px;border:1px solid #64748b;background:#0f172a;color:#fff;font-size:16px}
+  .names{display:grid;gap:10px}
+  button{width:100%;border:0;border-radius:16px;padding:17px;font-size:18px;font-weight:800;background:#38bdf8;color:#062033;margin-top:20px}
+  button:active{transform:scale(.99)}
+  .hint{font-size:13px;color:#cbd5e1;margin-top:14px;line-height:1.7}
+  #status{margin-top:16px;color:#bbf7d0;white-space:pre-line}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>📄 نسخ ملف TXT</h1>
+    <p class="sub">اختر ملفًا واحدًا وأنشئ منه 3 نسخ بأسماء مختلفة بضغطة واحدة.</p>
+
+    <label>1) اختر الملف</label>
+    <input id="file" type="file" accept=".txt,text/plain">
+
+    <label>2) أسماء النسخ</label>
+    <div class="names">
+      <input id="n1" type="text" value="نسخة 1.txt">
+      <input id="n2" type="text" value="نسخة 2.txt">
+      <input id="n3" type="text" value="نسخة 3.txt">
+    </div>
+
+    <button id="go">إنشاء وتحميل 3 نسخ</button>
+    <div id="status"></div>
+    <div style="margin-top:18px;text-align:center;padding:12px;border-radius:14px;background:rgba(56,189,248,.12);font-size:17px;font-weight:800;">
+      📞 0581158968
+    </div>
+    <div style="margin-top:14px;padding:14px;border-radius:16px;background:rgba(255,255,255,.07);text-align:center;line-height:1.8;">
+      ⚡ <b>للدخول السريع</b><br>
+      احفظ هذه الصفحة في <b>المفضلة</b> في Chrome، أو أضفها إلى الشاشة الرئيسية إذا ظهر لك الخيار.
+    </div>
+    <div class="hint">
+      ملاحظة: المتصفح لا يستطيع الكتابة مباشرة داخل مجلد الهاتف بدون إذن. عند الضغط سيبدأ تنزيل النسخ الثلاث.
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const savedNames = JSON.parse(localStorage.getItem('txtCopyNames') || 'null');
+if (savedNames && savedNames.length === 3) {
+  ['n1','n2','n3'].forEach((id,i)=>$(id).value=savedNames[i]);
+}
+['n1','n2','n3'].forEach(id=>{
+  $(id).addEventListener('input', ()=>{
+    localStorage.setItem('txtCopyNames', JSON.stringify(
+      ['n1','n2','n3'].map(x=>$(x).value)
+    ));
+  });
+});
+
+function safeName(name, i){
+  name = (name || '').trim() || `نسخة ${i}.txt`;
+  if(!/\.txt$/i.test(name)) name += '.txt';
+  return name.replace(/[\\\\/:*?"<>|]/g,'_');
+}
+$('go').onclick = async () => {
+  const f = $('file').files[0];
+  if(!f){ $('status').textContent='⚠️ اختر ملف TXT أولًا.'; return; }
+  const text = await f.text();
+  const names = [$('n1').value,$('n2').value,$('n3').value].map(safeName);
+  names.forEach((name,i)=>{
+    const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  });
+  $('status').textContent = '✅ تم إنشاء 3 نسخ. ستجدها في مجلد التنزيلات.';
+};
+</script>
+</body>
+</html>
