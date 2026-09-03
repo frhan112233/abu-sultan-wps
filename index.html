@@ -5,261 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أبو سلطان - ناسخ ملفات حماية الأجور (WPS)</title>
     <style>
-        :root {
-            --primary: #10b981;
-            --primary-hover: #059669;
-            --bg: #f3f4f6;
-            --card-bg: #ffffff;
-            --text: #1f2937;
-            --border: #e5e7eb;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .top-banner {
-            width: 100%;
-            max-width: 550px;
-            background-color: #111827;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            margin-top: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .top-banner h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #ffffff, #f59e0b, #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 550px;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 15px;
-        }
-
-        .header h2 {
-            margin: 0 0 8px 0;
-            font-size: 1.4rem;
-            color: #111827;
-        }
-
-        .header p {
-            margin: 0;
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        input[type="file"] {
-            width: 100%;
-            padding: 8px;
-            border: 2px dashed var(--border);
-            border-radius: 8px;
-            box-sizing: border-box;
-            background-color: #f9fafb;
-            cursor: pointer;
-        }
-
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .btn {
-            width: 100%;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .info-card {
-            background-color: #ecfdf5;
-            border: 1px solid #a7f3d0;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #065f46;
-            display: none;
-        }
-
-        .security-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 25px;
-            font-size: 0.85rem;
-            color: #6b7280;
-            background: #f9fafb;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .footer {
-            margin-top: 25px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #6b7280;
-            border-top: 1px solid var(--border);
-            padding-top: 15px;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; direction: rtl; text-align: center; padding: 20px; }
+        .card { background: white; max-width: 500px; margin: auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1a365d; font-size: 24px; margin-bottom: 20px; }
+        .upload-area { border: 2px dashed #cbd5e0; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #faf5ff; }
+        input[type="file"] { display: none; }
+        label { background: #4a5568; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: inline-block; }
+        .controls { margin: 20px 0; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        input[type="number"] { width: 70px; padding: 8px; border: 1px solid #cbd5e0; border-radius: 6px; text-align: center; font-size: 16px; }
+        button { background: #2b6cb0; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        button:hover { background: #2c5282; }
+        .info-box { background: #ebf8ff; border: 1px solid #bee3f8; padding: 12px; border-radius: 6px; font-size: 14px; margin-top: 15px; text-align: right; }
     </style>
 </head>
 <body>
 
-<div class="top-banner">
-    <h1>أبو سلطان</h1>
-</div>
-
-<div class="container">
-    <div class="header">
-        <h2>📄 ناسخ ملفات حماية الأجور (WPS)</h2>
-        <p>تكرار ملفات الأجور بالترميز والتنسيق المتوافق مع البنوك وأنظمة (مدد/مداد)</p>
+<div class="card">
+    <h1>📑 ناسخ ملفات حماية الأجور (WPS)</h1>
+    
+    <div class="upload-area">
+        <p id="fileName">اختر ملف WPS بصيغة TXT</p>
+        <label for="fileInput">اختيار ملف</label>
+        <input type="file" id="fileInput" accept=".txt" onchange="updateFileName()">
     </div>
 
-    <div class="form-group">
-        <label for="fileInput">اختر ملف WPS النصي (TXT):</label>
-        <input type="file" id="fileInput" accept=".txt">
+    <div class="controls">
+        <label style="background:none; color:black; padding:0;">عدد النسخ المطلوبة:</label>
+        <input type="number" id="copyCount" value="10" min="1" max="50">
     </div>
 
-    <div class="grid">
-        <div class="form-group">
-            <label for="copyCount">عدد النسخ المطلوبة:</label>
-            <input type="number" id="copyCount" value="3" min="1" max="50">
-        </div>
-        <div class="form-group">
-            <label for="filePrefix">اسم الملف الأساسي:</label>
-            <input type="text" id="filePrefix" placeholder="مثال: WPS_Salary">
-        </div>
-    </div>
+    <button onclick="duplicateWPS()">تكرار الملفات وتحميلها فوراً</button>
 
-    <button class="btn" onclick="processAndDownload()">إنشاء وتنزيل النسخ الجاهزة</button>
-
-    <div class="info-card" id="infoCard">
-        <b>✅ تفاصيل الملف:</b><br>
-        عدد الموظفين: <span id="lineCount" style="font-weight:bold;">0</span> أسطر<br>
-        <span style="display:block; margin-top:5px;">ترميز متوافق: (UTF-8 with BOM & Windows CRLF)</span>
-    </div>
-
-    <div class="security-badge">
-        🔒 <b>معالجة آمنة:</b> تتم العملية بالكامل داخل جهازك لضمان الخصوصية.
-    </div>
-
-    <div class="footer">
-        📞 للتواصل والدعم الفني: 0581158968
+    <div class="info-box">
+        <b>✅ المميزات التلقائية:</b>
+        <ul>
+            <li>تحديث الرقم المرجعي فريد لكل نسخة لضمان القبول في <b>مدد</b>.</li>
+            <li>تسمية الملفات تلقائياً (_1, _2, _3...).</li>
+            <li>ضبط الترميز المعتمد (UTF-8 with BOM & Windows CRLF).</li>
+        </ul>
     </div>
 </div>
 
 <script>
-    let fileContent = "";
-    let originalFileName = "";
+function updateFileName() {
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput.files.length > 0) {
+        document.getElementById('fileName').innerText = fileInput.files[0].name;
+    }
+}
 
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+function duplicateWPS() {
+    const fileInput = document.getElementById('fileInput');
+    const copyCount = parseInt(document.getElementById('copyCount').value);
 
-        originalFileName = file.name.replace(/\.[^/.]+$/, "");
-        const reader = new FileReader();
+    if (!fileInput.files.length) {
+        alert('الرجاء اختيار ملف WPS أولاً!');
+        return;
+    }
 
-        reader.onload = function(event) {
-            fileContent = event.target.result;
-            const lines = fileContent.split(/\r\n|\r|\n/).filter(line => line.trim() !== "");
-            document.getElementById('lineCount').textContent = lines.length;
-            document.getElementById('infoCard').style.display = 'block';
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-            if (!document.getElementById('filePrefix').value) {
-                document.getElementById('filePrefix').value = originalFileName;
-            }
-        };
+    reader.onload = function(e) {
+        let originalContent = e.target.result;
+        
+        // توحيد الأسطر أولاً
+        let lines = originalContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
 
-        reader.readAsText(file);
-    });
-
-    function processAndDownload() {
-        if (!fileContent) {
-            alert("يرجى اختيار ملف WPS النصي (TXT) أولاً!");
+        if (lines.length === 0) {
+            alert('الملف فارغ!');
             return;
         }
 
-        const count = parseInt(document.getElementById('copyCount').value) || 1;
-        const prefix = document.getElementById('filePrefix').value.trim() || "WPS_File";
-        const formattedContent = fileContent.replace(/\r?\n/g, "\r\n");
-        const blob = new Blob(["\ufeff" + formattedContent], { type: "text/plain;charset=utf-8" });
+        // إنشاء وتنزيل النسخ المحددة
+        for (let i = 1; i <= copyCount; i++) {
+            let modifiedLines = [...lines];
+            let headerParts = modifiedLines[0].split(',');
 
-        for (let i = 1; i <= count; i++) {
+            // تعديل الرقم المرجعي في السطر الأول لضمان تجاوز فحص مدد
+            if (headerParts.length > 1) {
+                let randomID = Math.floor(100000 + Math.random() * 900000);
+                headerParts[0] = headerParts[0] + "_" + randomID;
+                modifiedLines[0] = headerParts.join(',');
+            }
+
+            // إعادة تجميع النص مع صيغة أسطر Windows CRLF
+            let newContent = modifiedLines.join('\r\n');
+
+            // إعداد الملف بالترميز الصحيح UTF-8 with BOM
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, newContent], { type: 'text/plain;charset=utf-8' });
+
+            // تنزيل الملف باسم متسلسل
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            
+            let baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+            link.download = `${baseName}_${i}.txt`;
+            
             setTimeout(() => {
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `${prefix}_${i}.txt`;
-                document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-            }, i * 350);
+            }, i * 200); // فاصل زمني بسيط بين التنزيلات
         }
-    }
+    };
+
+    reader.readAsText(file);
+}
 </script>
 
 </body>
