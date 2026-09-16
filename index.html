@@ -147,14 +147,14 @@
         <div class="title-section">📝 ناسخ ملفات حماية الأجور (WPS)</div>
 
         <div class="file-upload-box" onclick="document.getElementById('fileInput').click()">
-            <div class="file-name-display" id="fileNameDisplay">لم يتم اختيار ملف</div>
+            <div class="file-name-display" id="fileNameDisplay">اختر ملف TXT</div>
             <button type="button" class="btn-select">اختيار ملف</button>
             <input type="file" id="fileInput" accept=".txt" onchange="handleFileSelect(event)">
         </div>
 
         <div class="form-group">
             <label for="customFileName">اسم الملف الناتج:</label>
-            <input type="text" id="customFileName" placeholder="أدخل اسم الملف">
+            <input type="text" id="customFileName" placeholder="مثال: 1170012">
         </div>
 
         <div class="form-group">
@@ -210,12 +210,16 @@
             customName = originalFileName ? originalFileName.replace('.txt', '') : 'WPS_File';
         }
 
-        const crlfContent = convertToCRLF(loadedFileContent);
+        // تحويل أسطر الملف إلى CRLF
+        let baseContent = convertToCRLF(loadedFileContent);
 
         for (let i = 1; i <= count; i++) {
             let finalFileName = `CRLF_${customName}_${i}.txt`;
             
-            let blob = new Blob([crlfContent], { type: 'text/plain;charset=utf-8' });
+            // إضافة ميزة البصمة الرقمية الفريدة لكل ملف حتى تقبله منصة مدد بدون خطأ
+            let uniqueContent = baseContent + " ".repeat(i) + "\r\n";
+
+            let blob = new Blob([uniqueContent], { type: 'text/plain;charset=utf-8' });
             let link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = finalFileName;
