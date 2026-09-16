@@ -5,134 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أبو سلطان - ناسخ ملفات حماية الأجور (WPS)</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-            overflow: hidden;
-            border: 1px solid #e1e4e8;
-        }
-        .header {
-            background-color: #1a365d;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0 0 8px 0;
-            font-size: 22px;
-        }
-        .header p {
-            margin: 0;
-            font-size: 13px;
-            color: #cbd5e0;
-        }
-        .content {
-            padding: 20px;
-        }
-        .title-section {
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 15px;
-        }
-        .file-upload-box {
-            border: 2px dashed #cbd5e0;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            background-color: #f8fafc;
-            margin-bottom: 15px;
-            cursor: pointer;
-        }
-        .file-upload-box input[type="file"] {
-            display: none;
-        }
-        .btn-select {
-            background-color: #4a5568;
-            color: white;
-            padding: 8px 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-        .file-name-display {
-            font-size: 13px;
-            color: #718096;
-            margin-bottom: 5px;
-        }
-        .form-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            font-size: 14px;
-            color: #2d3748;
-            font-weight: bold;
-        }
-        .form-group input[type="number"], .form-group input[type="text"] {
-            width: 50%;
-            padding: 6px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .btn-submit {
-            background-color: #2b6cb0;
-            color: white;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: background 0.3s;
-        }
-        .btn-submit:hover {
-            background-color: #2c5282;
-        }
-        .info-box {
-            background-color: #ebf8ff;
-            border: 1px solid #bee3f8;
-            border-radius: 6px;
-            padding: 10px 12px;
-            font-size: 12px;
-            color: #2b6cb0;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-        .footer {
-            text-align: center;
-            font-size: 13px;
-            color: #4a5568;
-            padding-top: 10px;
-            border-top: 1px solid #edf2f7;
-        }
-        .footer a {
-            color: #2b6cb0;
-            text-decoration: none;
-            font-weight: bold;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; overflow: hidden; border: 1px solid #e1e4e8; }
+        .header { background-color: #1a365d; color: #ffffff; padding: 20px; text-align: center; }
+        .header h1 { margin: 0 0 8px 0; font-size: 22px; }
+        .header p { margin: 0; font-size: 13px; color: #cbd5e0; }
+        .content { padding: 20px; }
+        .title-section { text-align: center; font-size: 16px; font-weight: bold; color: #2d3748; margin-bottom: 15px; }
+        .file-upload-box { border: 2px dashed #cbd5e0; border-radius: 8px; padding: 20px; text-align: center; background-color: #f8fafc; margin-bottom: 15px; cursor: pointer; }
+        .file-upload-box input[type="file"] { display: none; }
+        .btn-select { background-color: #4a5568; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 8px; }
+        .file-name-display { font-size: 13px; color: #718096; margin-bottom: 5px; }
+        .form-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .form-group label { font-size: 14px; color: #2d3748; font-weight: bold; }
+        .form-group input[type="number"], .form-group input[type="text"] { width: 50%; padding: 6px 10px; border: 1px solid #cbd5e0; border-radius: 5px; text-align: center; font-size: 14px; }
+        .btn-submit { background-color: #2b6cb0; color: white; width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px; transition: background 0.3s; }
+        .btn-submit:hover { background-color: #2c5282; }
+        .info-box { background-color: #ebf8ff; border: 1px solid #bee3f8; border-radius: 6px; padding: 10px 12px; font-size: 12px; color: #2b6cb0; margin-bottom: 15px; line-height: 1.6; }
+        .footer { text-align: center; font-size: 13px; color: #4a5568; padding-top: 10px; border-top: 1px solid #edf2f7; }
+        .footer a { color: #2b6cb0; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -177,7 +68,7 @@
 </div>
 
 <script>
-    let loadedFileContent = "";
+    let rawFileArrayBuffer = null;
     let originalFileName = "";
 
     function handleFileSelect(event) {
@@ -187,14 +78,14 @@
             document.getElementById('fileNameDisplay').textContent = file.name;
             const reader = new FileReader();
             reader.onload = function(e) {
-                loadedFileContent = e.target.result;
+                rawFileArrayBuffer = e.target.result;
             };
-            reader.readAsText(file);
+            reader.readAsArrayBuffer(file);
         }
     }
 
     async function processAndDownload() {
-        if (!loadedFileContent) {
+        if (!rawFileArrayBuffer) {
             alert("يرجى اختيار ملف TXT أولاً!");
             return;
         }
@@ -203,19 +94,16 @@
         let customName = document.getElementById('customFileName').value.trim();
 
         if (!customName) {
-            customName = originalFileName ? originalFileName.replace('.txt', '') : 'WPS_File';
+            customName = originalFileName ? originalFileName.replace('.txt', '') : '1170012_3';
         }
 
-        // تنظيف المحتوى وتوحيد النهايات إلى CRLF فقط
-        let cleanContent = loadedFileContent.replace(/\r?\n/g, "\r\n").trim();
-
         for (let i = 1; i <= count; i++) {
-            let finalFileName = `CRLF_${customName}_${i}.txt`;
+            // توليد سابقة CRLF_ المتكررة بناءً على رقم النسخة لتقوم منصة مدد بقبولها بشكل مستقل
+            let crlfPrefix = "CRLF_".repeat(i);
+            let finalFileName = `${crlfPrefix}${customName}.txt`;
             
-            // إضافة أسطر فارغة في نهايات الملف للنسخ الإضافية لتمييزها بنظام مُدد بدون تغيير البيانات
-            let fileText = cleanContent + "\r\n".repeat(i);
+            let blob = new Blob([rawFileArrayBuffer], { type: 'text/plain;charset=utf-8' });
 
-            let blob = new Blob([fileText], { type: 'text/plain;charset=utf-8' });
             let link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = finalFileName;
@@ -223,7 +111,7 @@
             link.click();
             document.body.removeChild(link);
 
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 400));
         }
     }
 </script>
