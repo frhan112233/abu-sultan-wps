@@ -206,23 +206,16 @@
             customName = originalFileName ? originalFileName.replace('.txt', '') : 'WPS_File';
         }
 
-        // تقسيم الأسطر
-        let lines = loadedFileContent.split(/\r?\n/);
+        // تنظيف المحتوى وتوحيد النهايات إلى CRLF فقط
+        let cleanContent = loadedFileContent.replace(/\r?\n/g, "\r\n").trim();
 
         for (let i = 1; i <= count; i++) {
             let finalFileName = `CRLF_${customName}_${i}.txt`;
             
-            // إضافة مسافات غير مرئية في السطر الأول ليكون التوقيع فريداً بنسبة 100% لكل ملف
-            let modifiedLines = [...lines];
-            if (modifiedLines.length > 0) {
-                modifiedLines[0] = modifiedLines[0] + " ".repeat(i);
-            }
+            // إضافة أسطر فارغة في نهايات الملف للنسخ الإضافية لتمييزها بنظام مُدد بدون تغيير البيانات
+            let fileText = cleanContent + "\r\n".repeat(i);
 
-            // تجميع النص بفاصل أسطر CRLF المطابق لموقع execeratics
-            let fileText = modifiedLines.join("\r\n") + "\r\n";
-
-            // إنشاء الملف بصيغة text/plain وتنزيله
-            let blob = new Blob([fileText], { type: 'text/plain;charset=windows-1256' });
+            let blob = new Blob([fileText], { type: 'text/plain;charset=utf-8' });
             let link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = finalFileName;
@@ -230,8 +223,7 @@
             link.click();
             document.body.removeChild(link);
 
-            // تأخير نصف ثانية لمنع تعارض الملفات أثناء التحميل
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
     }
 </script>
