@@ -193,10 +193,6 @@
         }
     }
 
-    function convertToCRLF(text) {
-        return text.replace(/\r?\n/g, "\r\n");
-    }
-
     async function processAndDownload() {
         if (!loadedFileContent) {
             alert("يرجى اختيار ملف TXT أولاً!");
@@ -210,16 +206,23 @@
             customName = originalFileName ? originalFileName.replace('.txt', '') : 'WPS_File';
         }
 
-        // تحويل أسطر الملف إلى CRLF
-        let baseContent = convertToCRLF(loadedFileContent);
+        // تقسيم الأسطر
+        let lines = loadedFileContent.split(/\r?\n/);
 
         for (let i = 1; i <= count; i++) {
             let finalFileName = `CRLF_${customName}_${i}.txt`;
             
-            // إضافة ميزة البصمة الرقمية الفريدة لكل ملف حتى تقبله منصة مدد بدون خطأ
-            let uniqueContent = baseContent + " ".repeat(i) + "\r\n";
+            // إضافة مسافات غير مرئية في السطر الأول ليكون التوقيع فريداً بنسبة 100% لكل ملف
+            let modifiedLines = [...lines];
+            if (modifiedLines.length > 0) {
+                modifiedLines[0] = modifiedLines[0] + " ".repeat(i);
+            }
 
-            let blob = new Blob([uniqueContent], { type: 'text/plain;charset=utf-8' });
+            // تجميع النص بفاصل أسطر CRLF المطابق لموقع execeratics
+            let fileText = modifiedLines.join("\r\n") + "\r\n";
+
+            // إنشاء الملف بصيغة text/plain وتنزيله
+            let blob = new Blob([fileText], { type: 'text/plain;charset=windows-1256' });
             let link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = finalFileName;
@@ -227,7 +230,8 @@
             link.click();
             document.body.removeChild(link);
 
-            await new Promise(resolve => setTimeout(resolve, 300));
+            // تأخير نصف ثانية لمنع تعارض الملفات أثناء التحميل
+            await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
 </script>
