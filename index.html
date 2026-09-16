@@ -15,6 +15,12 @@
         }
     }
 
+    // دالة لتحويل نهايات الأسطر إلى CRLF (\r\n) الخاصة بنظام Windows ومُدد
+    function convertToCRLF(text) {
+        // توحيد الأسطر أولاً ثم استبدالها بـ \r\n
+        return text.replace(/\r?\n/g, "\r\n");
+    }
+
     async function processAndDownload() {
         if (!loadedFileContent) {
             alert("يرجى اختيار ملف TXT أولاً!");
@@ -25,13 +31,17 @@
         let customName = document.getElementById('customFileName').value.trim();
 
         if (!customName) {
-            customName = originalFileName ? originalFileName.replace('.txt', '') : 'WPS_File';
+            customName = originalFileName ? originalFileName.replace('.txt', '') : '1170012';
         }
 
+        // تحويل النص إلى تنسيق CRLF
+        const crlfContent = convertToCRLF(loadedFileContent);
+
         for (let i = 1; i <= count; i++) {
-            let finalFileName = `${customName}_${i}.txt`;
+            // صياغة اسم الملف ليحتوي على CRLF برقم النسخة لتقبله منصة مدد
+            let finalFileName = `CRLF_${customName}_${i}.txt`;
             
-            let blob = new Blob([loadedFileContent], { type: 'text/plain;charset=utf-8' });
+            let blob = new Blob([crlfContent], { type: 'text/plain;charset=utf-8' });
             let link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = finalFileName;
@@ -39,7 +49,7 @@
             link.click();
             document.body.removeChild(link);
 
-            // إضافة تأخير زمني بسيط (0.3 ثانية) بين كل ملف لمنع تداخل التنزيلات في المتصفح
+            // تأخير 0.3 ثانية بين كل ملف
             await new Promise(resolve => setTimeout(resolve, 300));
         }
     }
