@@ -48,28 +48,18 @@
         }
         button {
             width: 100%;
-            background-color: #1e3a8a;
+            background-color: #059669;
             color: white;
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
         }
         button:hover {
-            background-color: #1d4ed8;
-        }
-        .download-btn {
-            background-color: #059669;
-            margin-top: 8px;
-        }
-        .download-btn:hover {
             background-color: #047857;
-        }
-        #resultsArea {
-            margin-top: 20px;
         }
         .footer-note {
             margin-top: 20px;
@@ -100,7 +90,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ تحويل فواصل الأسطر وحفظ الملفات (مطابق للأصل)
+        ⚡ المعالجة السريعة (بضغطة زر واحدة)
     </div>
 
     <div class="form-group">
@@ -109,17 +99,14 @@
     </div>
 
     <div class="form-group">
-        <label>عدد الملفات المطلوبة</label>
-        <input type="number" id="repeatCount" value="1" min="1">
+        <label>عدد النسخ المطلوبة</label>
+        <input type="number" id="repeatCount" value="3" min="1">
     </div>
 
-    <button id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
-
-    <!-- منطقة أزرار التنزيل الحقيقية -->
-    <div id="resultsArea"></div>
+    <button id="processBtn">🚀 معالجة وتنزيل الملفات فوراً</button>
 
     <div class="footer-note">
-        ✅ <b>حفظ مباشر:</b> الضغط على الزر سيقوم بحفظ الملف مباشرة في ذاكرة التخزين الداخلي للجهاز دون فتحه في المتصفح.
+        ✅ <b>بضغطة زر:</b> اختر الملف وعدد النسخ واضغط الزر الأعلى، وسيقوم النظام بتنزيل النسخ دفعة واحدة بكل سلاسة.
     </div>
 
     <div class="whatsapp">
@@ -132,8 +119,6 @@
     document.getElementById('processBtn').addEventListener('click', function () {
         const fileInput = document.getElementById('fileInput');
         const repeatCountInput = document.getElementById('repeatCount').value;
-        const resultsArea = document.getElementById('resultsArea');
-        resultsArea.innerHTML = ''; // مسح النتائج السابقة
 
         if (fileInput.files.length === 0) {
             alert('الرجاء اختيار ملف TXT أولاً');
@@ -142,6 +127,7 @@
 
         const file = fileInput.files[0];
         const originalName = file.name.replace(/\.[^/.]+$/, "");
+        const totalFiles = parseInt(repeatCountInput) || 1;
 
         const reader = new FileReader();
 
@@ -149,35 +135,27 @@
             let decoder = new TextDecoder('utf-8');
             let text = decoder.decode(e.target.result);
             
-            // ضبط فواصل الأسطر لمعيار ويندوز CRLF بدقة تامة دون أي نقص
+            // ضبط فواصل الأسطر لمعيار ويندوز CRLF بدقة تامة ومطابقة للأصل
             let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
             let finalContent = normalizedText.replace(/\n/g, '\r\n');
 
-            let totalFiles = parseInt(repeatCountInput) || 1;
-
-            // إنشاء أزرار تقوم بالتحميل الفعلي المباشر
+            // محاكاة التحميل المتتالي السريع بفاصل زمني بسيط لتجاوز حظر المتصفح وتقديمها بضغطة زر
             for (let i = 1; i <= totalFiles; i++) {
-                let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
-                let url = URL.createObjectURL(blob);
+                setTimeout(() => {
+                    let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
+                    let url = URL.createObjectURL(blob);
 
-                let btn = document.createElement("button");
-                btn.className = "download-btn";
-                btn.innerHTML = `📥 حفظ الملف رقم (${i})`;
-                
-                // استخدام حدث النقر البرمجي لإجبار المتصفح على تحميل الملف وحفظه
-                btn.onclick = function() {
                     let a = document.createElement("a");
                     a.href = url;
                     a.download = `${originalName}_${i}.txt`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                };
-
-                resultsArea.appendChild(btn);
+                    URL.revokeObjectURL(url);
+                }, (i - 1) * 400); // تأخير بسيط بين الملف والآخر لضمان قبول الجوال لها
             }
 
-            alert('تم تجهيز الملفات! اضغط على أزرار الحفظ بالأسفل لتنزيلها مباشرة في جهازك.');
+            alert('تم بدء تجهيز وتنزيل الملفات المطلوبة بنجاح!');
         };
 
         reader.readAsArrayBuffer(file);
