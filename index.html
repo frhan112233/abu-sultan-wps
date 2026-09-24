@@ -99,14 +99,14 @@
     </div>
 
     <div class="form-group">
-        <label>عدد التكرار (لتوليد النسخ وترقيمها)</label>
+        <label>عدد التكرار</label>
         <input type="number" id="repeatCount" value="1" min="1">
     </div>
 
-    <button id="processBtn">معالجة وتنزيل الملفات (CRLF)</button>
+    <button id="processBtn">معالجة وتنزيل الملف (CRLF)</button>
 
     <div class="footer-note">
-        ✅ <b>حفظ تلقائي:</b> يأخذ اسم الملف الأصلي ويضيف عليه ترقيم النسخ تلقائياً مع معيار ويندوز (CRLF).
+        ✅ <b>حفظ تلقائي:</b> يتم حفظ الملف في مجلد التنزيلات لكي يظهر مباشرة في الملفات الحديثة.
     </div>
 
     <div class="whatsapp">
@@ -126,7 +126,7 @@
         }
 
         const file = fileInput.files[0];
-        const originalName = file.name.replace(/\.[^/.]+$/, ""); // استخراج اسم الملف بدون امتداد .txt
+        const originalName = file.name.replace(/\.[^/.]+$/, ""); // استخراج اسم الملف الأصلي
 
         const reader = new FileReader();
 
@@ -157,7 +157,7 @@
             let link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             
-            // تسمية الملف باسم الملف الأصلي مضافاً إليه عدد النسخ كترقيم
+            // تسمية الملف باسمه الأصلي مضافاً إليه عدد النسخ لضمان ظهوره في الحديثة وعدم تداخل الأسماء
             link.download = `${originalName}_نسخة_${repeatCount}.txt`;
             
             link.click();
