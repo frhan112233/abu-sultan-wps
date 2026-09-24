@@ -38,13 +38,15 @@
             font-weight: bold;
             color: #333;
         }
-        input[type="file"], input[type="number"] {
+        input[type="file"], select {
             width: 100%;
             padding: 10px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 5px;
             margin-top: 5px;
+            background-color: #fff;
+            font-size: 15px;
         }
         button {
             width: 100%;
@@ -100,7 +102,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ التسمية الذكية الشاملة للرقم الموحد
+        ⚙️ التسمية الذكية واختيار عدد النسخ (1 إلى 30)
     </div>
 
     <div class="form-group">
@@ -110,7 +112,38 @@
 
     <div class="form-group">
         <label>عدد الملفات المطلوبة</label>
-        <input type="number" id="repeatCount" value="1" min="1">
+        <select id="repeatCount">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+        </select>
     </div>
 
     <button id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
@@ -119,7 +152,7 @@
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>دعم الأنماط المتعددة:</b> يتعرف النظام على الأرقام الموحدة سواء كانت بصيغة 01-xxxxxxx أو 4-xxxxxx لضمان التسمية الصحيحة دائماً.
+        ✅ <b>دعم شامل:</b> استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية توليد حتى 30 نسخة بضغطة زر.
     </div>
 
     <div class="whatsapp">
@@ -153,7 +186,7 @@
 
             let unifiedNumber = "";
             
-            // 1. البحث عن النمط الذي يحتوي على شرطة مثل (1 أو رقمين - أرقام المنشأة) مثل 4-68944 أو 01-4551236
+            // 1. البحث عن النمط الذي يحتوي على شرطة (رقم أو رقمين - أرقام المنشأة) مثل 4-68944 أو 01-4551236
             let match = text.match(/\b\d{1,2}-\d{4,8}\b/);
             if (match) {
                 let rawVal = match[0];
@@ -201,7 +234,7 @@
                 resultsArea.appendChild(btn);
             }
 
-            alert('تمت المعالجة واستخراج الرقم الموحد بنجاح!');
+            alert('تمت المعالجة وتجهيز الملفات بنجاح!');
         };
 
         reader.readAsArrayBuffer(file);
