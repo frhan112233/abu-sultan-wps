@@ -48,18 +48,28 @@
         }
         button {
             width: 100%;
-            background-color: #059669;
+            background-color: #1e3a8a;
             color: white;
-            padding: 14px;
+            padding: 12px;
             border: none;
             border-radius: 5px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
         }
         button:hover {
+            background-color: #1d4ed8;
+        }
+        .download-btn {
+            background-color: #059669;
+            margin-top: 8px;
+        }
+        .download-btn:hover {
             background-color: #047857;
+        }
+        #resultsArea {
+            margin-top: 20px;
         }
         .footer-note {
             margin-top: 20px;
@@ -90,7 +100,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚡ المعالجة السريعة (بضغطة زر واحدة)
+        ⚙️ التسمية الذكية بناءً على رقم الملف التسلسلي
     </div>
 
     <div class="form-group">
@@ -99,14 +109,17 @@
     </div>
 
     <div class="form-group">
-        <label>عدد النسخ المطلوبة</label>
-        <input type="number" id="repeatCount" value="3" min="1">
+        <label>عدد الملفات المطلوبة</label>
+        <input type="number" id="repeatCount" value="1" min="1">
     </div>
 
-    <button id="processBtn">🚀 معالجة وتنزيل الملفات فوراً</button>
+    <button id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
+
+    <!-- منطقة أزرار التنزيل الحقيقية -->
+    <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>بضغطة زر:</b> اختر الملف وعدد النسخ واضغط الزر الأعلى، وسيقوم النظام بتنزيل النسخ دفعة واحدة بكل سلاسة.
+        ✅ <b>تسمية متطابقة:</b> يتم استخراج الرقم التسلسلي في نهاية أو داخل الملف ليكون هو أساس أسماء الملفات المحفوظة.
     </div>
 
     <div class="whatsapp">
@@ -119,6 +132,8 @@
     document.getElementById('processBtn').addEventListener('click', function () {
         const fileInput = document.getElementById('fileInput');
         const repeatCountInput = document.getElementById('repeatCount').value;
+        const resultsArea = document.getElementById('resultsArea');
+        resultsArea.innerHTML = ''; // مسح النتائج السابقة
 
         if (fileInput.files.length === 0) {
             alert('الرجاء اختيار ملف TXT أولاً');
@@ -126,36 +141,59 @@
         }
 
         const file = fileInput.files[0];
-        const originalName = file.name.replace(/\.[^/.]+$/, "");
-        const totalFiles = parseInt(repeatCountInput) || 1;
-
         const reader = new FileReader();
 
         reader.onload = function (e) {
             let decoder = new TextDecoder('utf-8');
             let text = decoder.decode(e.target.result);
             
-            // ضبط فواصل الأسطر لمعيار ويندوز CRLF بدقة تامة ومطابقة للأصل
+            // ضبط فواصل الأسطر لمعيار ويندوز CRLF بدقة تامة
             let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
             let finalContent = normalizedText.replace(/\n/g, '\r\n');
 
-            // محاكاة التحميل المتتالي السريع بفاصل زمني بسيط لتجاوز حظر المتصفح وتقديمها بضغطة زر
-            for (let i = 1; i <= totalFiles; i++) {
-                setTimeout(() => {
-                    let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
-                    let url = URL.createObjectURL(blob);
+            // استخراج الأرقام الموجودة في اسم الملف أو محتواه (مثل الأرقام التسلسلية كـ 236 وغيرها)
+            let baseName = "WPS_File";
+            
+            // البحث عن الأرقام في اسم الملف الأصلي أولاً (مثل الرقم الأخير أو رقم النسخة في الاسم)
+            let nameMatches = file.name.match(/[\d_]+/g);
+            if (file.name.includes('.')) {
+                let cleanFileName = file.name.substring(0, file.name.lastIndexOf('.'));
+                let parts = cleanFileName.split('_');
+                if (parts.length > 0) {
+                    // اخذ آخر جزء أو الجزء الذي يحتوي على رقم التسلسل
+                    baseName = parts[parts.length - 1];
+                    if (baseName.length < 2 && parts.length > 1) {
+                        baseName = parts[parts.length - 2];
+                    }
+                }
+            }
 
+            let totalFiles = parseInt(repeatCountInput) || 1;
+
+            // إنشاء أزرار التحميل مع التسمية المبنية على الرقم التسلسلي المستخرج
+            for (let i = 1; i <= totalFiles; i++) {
+                let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
+                let url = URL.createObjectURL(blob);
+
+                let btn = document.createElement("button");
+                btn.className = "download-btn";
+                btn.innerHTML = `📥 حفظ الملف برقم (${baseName}) - نسخة (${i})`;
+                
+                let fileName = `${baseName}_${i}.txt`;
+
+                btn.onclick = function() {
                     let a = document.createElement("a");
                     a.href = url;
-                    a.download = `${originalName}_${i}.txt`;
+                    a.download = fileName;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, (i - 1) * 400); // تأخير بسيط بين الملف والآخر لضمان قبول الجوال لها
+                };
+
+                resultsArea.appendChild(btn);
             }
 
-            alert('تم بدء تجهيز وتنزيل الملفات المطلوبة بنجاح!');
+            alert('تم تجهيز الملفات وتسميتها بناءً على الرقم التسلسلي بنجاح!');
         };
 
         reader.readAsArrayBuffer(file);
