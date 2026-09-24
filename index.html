@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أبو سلطان - خدمات وتسهيل أعمال حماية الأجور (WPS)</title>
+    <title>أبو سلطان - معالج ملفات حماية الأجور (WPS)</title>
     <style>
         body {
             font-family: Tahoma, sans-serif;
@@ -86,11 +86,11 @@
 <div class="container">
     <div class="header">
         <h2>أبو سلطان</h2>
-        <p>خدمات وتسهيل أعمال حماية الأجور (WPS)</p>
+        <p>معالج وتسهيل ملفات حماية الأجور (WPS)</p>
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        📝 ناسخ ملفات حماية الأجور (WPS)
+        ⚙️ تحويل وضبط فواصل الأسطر وتكرار الملفات
     </div>
 
     <div class="form-group">
@@ -99,24 +99,23 @@
     </div>
 
     <div class="form-group">
-        <label>اسم الملف الناتج (مثال: 1170012)</label>
-        <input type="text" id="outputName" placeholder="مثال: 1170012">
+        <label>اسم الملف الناتج</label>
+        <input type="text" id="outputName" placeholder="مثال: wps_output">
     </div>
 
     <div class="form-group">
-        <label>عدد النسخ المطلوبة</label>
-        <input type="number" id="repeatCount" value="2" min="1">
+        <label>عدد التكرار</label>
+        <input type="number" id="repeatCount" value="1" min="1">
     </div>
 
-    <button id="processBtn">تكرار وتحميل الملفات المباشرة (TXT)</button>
+    <button id="processBtn">معالجة وتنزيل الملف (CRLF)</button>
 
     <div class="footer-note">
-        🔒 <b>معالجة آمنة:</b> تتم العملية بالكامل داخل جهازك لضمان الخصوصية.<br>
-        ✅ <b>الحفاظ على البنية:</b> يتم تكرار البيانات بالشكل السليم المتوافق مع المنصة.
+        ✅ <b>توافق تام:</b> معيار فواصل أسطر ويندوز (CRLF) لضمان القبول في المنصات الرسمية.
     </div>
 
     <div class="whatsapp">
-        💬 للتواصل والدعم الفني عبر واتساب:<br>
+        💬 للتواصل والدعم الفني:<br>
         <a href="https://wa.me/966581158968" target="_blank">📱 0581158968</a>
     </div>
 </div>
@@ -137,38 +136,39 @@
 
         reader.onload = function (e) {
             let text = e.target.result;
-            let lines = text.split(/\r?\n/);
+            
+            let cleanText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            let lines = cleanText.split('\n');
             
             let repeatCount = parseInt(repeatCountInput) || 1;
-            
-            // استخراج الهيدر وأسطر الموظفين مع استبعاد التوقيع القديم المتكرر في الأسفل
-            let header = lines[0];
             let employeeLines = [];
-            
+            let header = lines[0] || "";
+
             for (let i = 1; i < lines.length; i++) {
-                let line = lines[i].trim();
-                if (line !== "" && !line.startsWith("-")) {
+                if (lines[i].trim() !== "" && !lines[i].startsWith("-")) {
                     employeeLines.push(lines[i]);
                 }
             }
 
             let finalLines = [header];
-
-            // تكرار أسطر الموظفين بالعدد المطلوب بشكل نظيف
             for (let c = 0; c < repeatCount; c++) {
-                employeeLines.forEach(empLine => {
-                    finalLines.push(empLine);
-                });
+                employeeLines.forEach(l => finalLines.push(l));
             }
 
-            // تجميع الملف النهائي بفواصل الأسطر الصحيحة CRLF (\r\n)
             let finalContent = finalLines.join("\r\n");
 
             let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
             let link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = (outputNameInput ? outputNameInput : "wps_file") + ".txt";
+            
+            // تحديد الاسم المدخل أو الافتراضي والتأكد من امتداد txt
+            let baseName = outputNameInput ? outputNameInput.trim() : "fixed_wps";
+            link.download = baseName.endsWith('.txt') ? baseName : baseName + ".txt";
+            
             link.click();
+
+            // رسالة التنبيه عند إتمام التحميل
+            alert('تم بنجاح!');
         };
 
         reader.readAsText(file);
