@@ -38,7 +38,7 @@
             font-weight: bold;
             color: #333;
         }
-        input[type="file"], input[type="text"], input[type="number"] {
+        input[type="file"], input[type="number"] {
             width: 100%;
             padding: 10px;
             box-sizing: border-box;
@@ -99,19 +99,14 @@
     </div>
 
     <div class="form-group">
-        <label>اسم الملف الناتج</label>
-        <input type="text" id="outputName" placeholder="مثال: wps_output">
-    </div>
-
-    <div class="form-group">
-        <label>عدد التكرار</label>
+        <label>عدد التكرار (لتوليد النسخ وترقيمها)</label>
         <input type="number" id="repeatCount" value="1" min="1">
     </div>
 
-    <button id="processBtn">معالجة وتنزيل الملف (CRLF)</button>
+    <button id="processBtn">معالجة وتنزيل الملفات (CRLF)</button>
 
     <div class="footer-note">
-        ✅ <b>توافق تام:</b> معيار فواصل أسطر ويندوز (CRLF) لضمان القبول في المنصات الرسمية.
+        ✅ <b>حفظ تلقائي:</b> يأخذ اسم الملف الأصلي ويضيف عليه ترقيم النسخ تلقائياً مع معيار ويندوز (CRLF).
     </div>
 
     <div class="whatsapp">
@@ -124,7 +119,6 @@
     document.getElementById('processBtn').addEventListener('click', function () {
         const fileInput = document.getElementById('fileInput');
         const repeatCountInput = document.getElementById('repeatCount').value;
-        const outputNameInput = document.getElementById('outputName').value;
 
         if (fileInput.files.length === 0) {
             alert('الرجاء اختيار ملف TXT أولاً');
@@ -132,6 +126,8 @@
         }
 
         const file = fileInput.files[0];
+        const originalName = file.name.replace(/\.[^/.]+$/, ""); // استخراج اسم الملف بدون امتداد .txt
+
         const reader = new FileReader();
 
         reader.onload = function (e) {
@@ -161,13 +157,11 @@
             let link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             
-            // تحديد الاسم المدخل أو الافتراضي والتأكد من امتداد txt
-            let baseName = outputNameInput ? outputNameInput.trim() : "fixed_wps";
-            link.download = baseName.endsWith('.txt') ? baseName : baseName + ".txt";
+            // تسمية الملف باسم الملف الأصلي مضافاً إليه عدد النسخ كترقيم
+            link.download = `${originalName}_نسخة_${repeatCount}.txt`;
             
             link.click();
 
-            // رسالة التنبيه عند إتمام التحميل
             alert('تم بنجاح!');
         };
 
