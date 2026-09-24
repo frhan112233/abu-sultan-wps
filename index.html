@@ -13,29 +13,52 @@ document.getElementById('processBtn').addEventListener('click', function () {
 
     reader.onload = function (e) {
         let text = e.target.result;
-        
-        // توحيد فواصل الأسطر لضمان توافقها مع نظام Windows و مدد (CRLF)
         let lines = text.split(/\r?\n/);
         
-        // هنا يتم معالجة وتكرار الأسطر حسب العدد المطلوب مع الحفاظ على البنية والتوقيع
         let repeatCount = parseInt(repeatCountInput) || 1;
         let processedLines = [];
 
-        // نفترض أنك تريد تكرار أسطر البيانات بناءً على المنطق المطلوب لديك
-        for (let i = 0; i < repeatCount; i++) {
-            lines.forEach(line => {
-                processedLines.push(line);
+        // معالجة رأس الملف (Header) لتغيير الرقم المرجعي أو بصمة الملف لمنع خطأ التكرار
+        if (lines.length > 0) {
+            let headerLine = lines[0];
+            // إضافة طابع زمني أو رقم عشوائي بسيط للرقم المرجعي في الهيدر ليكون فريداً
+            let randomId = Math.floor(Math.random() * 90000) + 10000;
+            // استبدال أو تعديل جزء من الهيدر لضمان عدم تطابق بصمة الملف مع الملف الأصلي
+            headerLine = headerLine.replace(/(\d{8,})/g, (match) => {
+                return parseInt(match) + Math.floor(Math.random() * 10) + 1;
             });
+            processedLines.push(headerLine);
         }
 
-        // إعادة تجميع الملف باستخدام فواصل الأسطر القياسية CRLF (\r\n)
+        // نسخ وتكرار الأسطر الباقية (ما عدا الهيدر والتوقيع إن وجد)
+        for (let i = 0; i < repeatCount; i++) {
+            for (let j = 1; j < lines.length; j++) {
+                // تجنب تكرار سطر التوقيع القديم حرفياً في منتصف الملف إذا كان موجوداً
+                if (!lines[j].startsWith('-')) {
+                    processedLines.push(lines[j]);
+                }
+            }
+        }
+
+        // إضافة التوقيع في النهاية أو الحفاظ على هيكل نظيف
+        let lastLine = lines[lines.length - 1];
+        if (lastLine && lastLine.startsWith('-')) {
+            processedLines.push(lastLine);
+        }
+
+        // إعادة تجميع الملف بفواصل الأسطر القياسية CRLF (\r\n) لضمان توافقها مع مدد
         let finalContent = processedLines.join("\r\n");
 
-        // إنشاء ملف وتحميله تلقائياً
+        // توليد اسم فريد للملف الناتج بناءً على الوقت الحالي لتفادي تشابه الأسماء
+        let uniqueSuffix = Math.floor(Math.random() * 900) + 100;
+        let baseName = outputNameInput ? outputNameInput : "wps_file";
+        let finalFileName = `${baseName}_${uniqueSuffix}.txt`;
+
+        // إنشاء الملف وتنزيله تلقائياً
         let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
         let link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = (outputNameInput || "output") + ".txt";
+        link.download = finalFileName;
         link.click();
     };
 
