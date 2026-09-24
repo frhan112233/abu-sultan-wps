@@ -100,7 +100,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ استخراج الرقم الموحد بدقة تامة
+        ⚙️ التسمية الذكية بالرقم الموحد من الملف
     </div>
 
     <div class="form-group">
@@ -119,7 +119,7 @@
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>التسمية المباشرة:</b> يلتقط النظام الرقم الموحد (مثل 4551236 أو 01-4551236) من الملف ويسمي النسخ به فوراً.
+        ✅ <b>التسمية المباشرة:</b> يستخرج النظام الرقم الموحد (مثل 4551236) من محتوى الملف ويضعها كاسم للملفات المحفوظة.
     </div>
 
     <div class="whatsapp">
@@ -151,19 +151,18 @@
             let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
             let finalContent = normalizedText.replace(/\n/g, '\r\n');
 
-            // البحث الذكي عن الرقم الموحد أو أي نمط مشابه للرقم داخل النص (مثل 4551236 أو 01-4551236)
+            // استخراج الرقم الموحد بدقة (البحث عن الأرقام التي تأتي بعد الشرطة مثل 4551236 أو أرقام المنشأة)
             let unifiedNumber = "WPS_File";
             
-            // محاولة البحث عن نمط مثل 01-4551236 أو الأرقام التي تسبقها شرطة
-            let match = text.match(/\d{2}-\d{7}/) || text.match(/\d{7}/);
+            // البحث عن نمط مثل 01-4551236 أو الأرقام المكونة من 7 خانات داخل النص
+            let match = text.match(/\d{2}-\d{7}/) || text.match(/\b\d{7}\b/);
             if (match) {
-                // استبدال الشرطة (-) بشرطة سفلية (_) لتتوافق مع نظام تسمية الملفات
-                unifiedNumber = match[0].replace(/-/g, '_');
-            } else {
-                // في حال لم يجد، يبحث عن أي رقم مكون من 7 أرقام متواصلة
-                let fallbackMatch = text.match(/\b\d{7}\b/);
-                if (fallbackMatch) {
-                    unifiedNumber = fallbackMatch[0];
+                // إذا وجد صيغة مثل 01-4551236 يأخذ الجزء الأخير أو يزيل الشرطة
+                let rawVal = match[0];
+                if (rawVal.includes('-')) {
+                    unifiedNumber = rawVal.split('-')[1]; // يأخذ الرقم بعد الشرطة مثل 4551236
+                } else {
+                    unifiedNumber = rawVal;
                 }
             }
 
