@@ -100,7 +100,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ التسمية الذكية بالرقم الموحد من الملف
+        ⚙️ التسمية الذكية الشاملة للرقم الموحد
     </div>
 
     <div class="form-group">
@@ -119,7 +119,7 @@
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>التسمية المباشرة:</b> يستخرج النظام الرقم الموحد (مثل 4551236) من محتوى الملف ويضعها كاسم للملفات المحفوظة.
+        ✅ <b>دعم الأنماط المتعددة:</b> يتعرف النظام على الأرقام الموحدة سواء كانت بصيغة 01-xxxxxxx أو 4-xxxxxx لضمان التسمية الصحيحة دائماً.
     </div>
 
     <div class="whatsapp">
@@ -151,24 +151,34 @@
             let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
             let finalContent = normalizedText.replace(/\n/g, '\r\n');
 
-            // استخراج الرقم الموحد بدقة (البحث عن الأرقام التي تأتي بعد الشرطة مثل 4551236 أو أرقام المنشأة)
-            let unifiedNumber = "WPS_File";
+            let unifiedNumber = "";
             
-            // البحث عن نمط مثل 01-4551236 أو الأرقام المكونة من 7 خانات داخل النص
-            let match = text.match(/\d{2}-\d{7}/) || text.match(/\b\d{7}\b/);
+            // 1. البحث عن النمط الذي يحتوي على شرطة مثل (1 أو رقمين - أرقام المنشأة) مثل 4-68944 أو 01-4551236
+            let match = text.match(/\b\d{1,2}-\d{4,8}\b/);
             if (match) {
-                // إذا وجد صيغة مثل 01-4551236 يأخذ الجزء الأخير أو يزيل الشرطة
                 let rawVal = match[0];
-                if (rawVal.includes('-')) {
-                    unifiedNumber = rawVal.split('-')[1]; // يأخذ الرقم بعد الشرطة مثل 4551236
+                unifiedNumber = rawVal.includes('-') ? rawVal.split('-')[1] : rawVal;
+            } else {
+                // 2. البحث عن أي أرقام متصلة من 5 إلى 8 خانات داخل نص الملف
+                let generalMatch = text.match(/\b\d{5,8}\b/);
+                if (generalMatch) {
+                    unifiedNumber = generalMatch[0];
+                }
+            }
+
+            // 3. إذا لم يوجد في النص، نبحث في اسم الملف الأصلي
+            if (!unifiedNumber) {
+                let nameMatch = file.name.match(/\d{5,}/);
+                if (nameMatch) {
+                    unifiedNumber = nameMatch[0];
                 } else {
-                    unifiedNumber = rawVal;
+                    unifiedNumber = "WPS_File";
                 }
             }
 
             let totalFiles = parseInt(repeatCountInput) || 1;
 
-            // إنشاء أزرار التحميل بالرقم الموحد المستخرج
+            // إنشاء أزرار التحميل بالرقم المستخرج
             for (let i = 1; i <= totalFiles; i++) {
                 let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
                 let url = URL.createObjectURL(blob);
@@ -191,7 +201,7 @@
                 resultsArea.appendChild(btn);
             }
 
-            alert('تم استخراج الرقم الموحد وتجهيز الملفات بنجاح!');
+            alert('تمت المعالجة واستخراج الرقم الموحد بنجاح!');
         };
 
         reader.readAsArrayBuffer(file);
