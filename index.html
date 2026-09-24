@@ -106,7 +106,7 @@
     <button id="processBtn">معالجة وتنزيل الملف (CRLF)</button>
 
     <div class="footer-note">
-        ✅ <b>حفظ تلقائي:</b> يتم حفظ الملف في مجلد التنزيلات لكي يظهر مباشرة في الملفات الحديثة.
+        ✅ <b>معالجة فورية:</b> يتم تنزيل الملف ليظهر مباشرة في قسم الملفات الحديثة بهاتفك مع معيار ويندوز (CRLF).
     </div>
 
     <div class="whatsapp">
@@ -126,7 +126,7 @@
         }
 
         const file = fileInput.files[0];
-        const originalName = file.name.replace(/\.[^/.]+$/, ""); // استخراج اسم الملف الأصلي
+        const originalName = file.name.replace(/\.[^/.]+$/, ""); // اسم الملف بدون امتداد
 
         const reader = new FileReader();
 
@@ -157,8 +157,9 @@
             let link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             
-            // تسمية الملف باسمه الأصلي مضافاً إليه عدد النسخ لضمان ظهوره في الحديثة وعدم تداخل الأسماء
-            link.download = `${originalName}_نسخة_${repeatCount}.txt`;
+            // إضافة وقت أو ترقيم بسيط لاسم الملف لكي يجبر نظام الهاتف على اعتباره ملفاً جديداً ويظهره فوراً في "الملفات الحديثة"
+            let timeStamp = new Date().toISOString().slice(11, 19).replace(/:/g, '');
+            link.download = `${originalName}_${timeStamp}.txt`;
             
             link.click();
 
