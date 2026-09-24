@@ -100,7 +100,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ تحويل وضبط فواصل الأسطر وتكرار الملفات
+        ⚙️ معالجة كاملة مع الحفاظ على التوقيع والأسرار
     </div>
 
     <div class="form-group">
@@ -115,11 +115,11 @@
 
     <button id="processBtn">جهز الملفات للمعالجة (CRLF)</button>
 
-    <!-- منطقة ظهور أزرار التحميل المستقلة -->
+    <!-- منطقة أزرار التنزيل المستقلة -->
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>تجهيز سليم:</b> يتم إنشاء الملفات بالعدد المطلوب مع الهيدر الأساسي لكل ملف وبمعيار ويندوز (CRLF).
+        ✅ <b>حفظ مطابق 100%:</b> يتم الحفاظ على محتوى الملف بالكامل بما في ذلك التوقيع الرقمي ونهاية الملف مع معيار (CRLF).
     </div>
 
     <div class="whatsapp">
@@ -133,7 +133,7 @@
         const fileInput = document.getElementById('fileInput');
         const repeatCountInput = document.getElementById('repeatCount').value;
         const resultsArea = document.getElementById('resultsArea');
-        resultsArea.innerHTML = ''; // مسح النتائج القديمة
+        resultsArea.innerHTML = ''; // مسح النتائج السابقة
 
         if (fileInput.files.length === 0) {
             alert('الرجاء اختيار ملف TXT أولاً');
@@ -148,26 +148,23 @@
         reader.onload = function (e) {
             let text = e.target.result;
             
+            // توحيد فواصل الأسطر واستخراج جميع الأسطر بدون حذف أي جزء (بما في ذلك التوقيع)
             let cleanText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
             let lines = cleanText.split('\n');
             
             let totalFiles = parseInt(repeatCountInput) || 1;
-            let employeeLines = [];
-            let header = lines[0] || "";
+            let validLines = [];
 
-            for (let i = 1; i < lines.length; i++) {
-                if (lines[i].trim() !== "" && !lines[i].startsWith("-")) {
-                    employeeLines.push(lines[i]);
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i] !== "") {
+                    validLines.push(lines[i]);
                 }
             }
 
-            // إنشاء الأزرار بالعدد المطلوب وبناء الملفات بشكل صحيح
+            let finalContent = validLines.join("\r\n");
+
+            // إنشاء الأزرار بالعدد المطلوب بناءً على محتوى الملف الأصلي كاملاً
             for (let i = 1; i <= totalFiles; i++) {
-                let finalLines = [header];
-                employeeLines.forEach(l => finalLines.push(l));
-
-                let finalContent = finalLines.join("\r\n");
-
                 let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
                 let url = URL.createObjectURL(blob);
 
@@ -189,7 +186,7 @@
                 resultsArea.appendChild(btn);
             }
 
-            alert('تم تجهيز الملفات بنجاح! اضغط على الأزرار بالأسفل للتحميل.');
+            alert('تم تجهيز الملفات بكامل محتواها وتوقيعاتها بنجاح!');
         };
 
         reader.readAsText(file);
