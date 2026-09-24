@@ -106,7 +106,7 @@
     <button id="processBtn">معالجة وتنزيل الملفات (CRLF)</button>
 
     <div class="footer-note">
-        ✅ <b>تنزيل متعدد:</b> سيتم توليد وتنزيل عدد الملفات المحدد برقم تسلسلي لكل ملف بمعيار ويندوز (CRLF).
+        ✅ <b>تنزيل متعدد ذكي:</b> يتم تنزيل جميع الملفات بالعدد المطلوب تباعاً لضمان عدم ضياع أي ملف على الجوال.
     </div>
 
     <div class="whatsapp">
@@ -146,25 +146,32 @@
                 }
             }
 
-            // تكرار عملية إنشاء وتنزيل الملفات بعدد العدد المطلوب
-            for (let i = 1; i <= totalFiles; i++) {
-                let finalLines = [header];
-                employeeLines.forEach(l => finalLines.push(l));
+            let finalLines = [header];
+            employeeLines.forEach(l => finalLines.push(l));
+            let finalContent = finalLines.join("\r\n");
 
-                let finalContent = finalLines.join("\r\n");
+            // استخدام حلقة زمنية لضمان تنزيل كل الملفات على الجوال بدون حظر المتصفح
+            let index = 0;
+            function downloadNext() {
+                if (index < totalFiles) {
+                    index++;
+                    let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
+                    let link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    
+                    // ترقيم الملفات لتظهر بوضوح في الملفات الحديثة
+                    link.download = `${originalName}_${index}.txt`;
+                    
+                    link.click();
 
-                let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
-                let link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                
-                // تسمية كل ملف برقم تسلسلي (1، 2، 3...) لكي تظهر كلها في الملفات الحديثة
-                link.download = `${originalName}_${i}.txt`;
-                
-                // محاكاة النقر لتنزيل كل ملف على حدة
-                link.click();
+                    // الانتظار نصف ثانية قبل تحميل الملف التالي لتجاوز قيود متصفح الجوال
+                    setTimeout(downloadNext, 500);
+                } else {
+                    alert('تم تنزيل جميع الملفات بنجاح!');
+                }
             }
 
-            alert('تم بنجاح!');
+            downloadNext();
         };
 
         reader.readAsText(file);
