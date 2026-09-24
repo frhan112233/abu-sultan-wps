@@ -61,6 +61,16 @@
         button:hover {
             background-color: #1d4ed8;
         }
+        .download-btn {
+            background-color: #059669;
+            margin-top: 8px;
+        }
+        .download-btn:hover {
+            background-color: #047857;
+        }
+        #resultsArea {
+            margin-top: 20px;
+        }
         .footer-note {
             margin-top: 20px;
             font-size: 13px;
@@ -103,10 +113,13 @@
         <input type="number" id="repeatCount" value="1" min="1">
     </div>
 
-    <button id="processBtn">معالجة وتنزيل الملفات (CRLF)</button>
+    <button id="processBtn">جهز الملفات للمعالجة (CRLF)</button>
+
+    <!-- منطقة ظهور أزرار التحميل المستقلة لتجاوز قيود الجوال -->
+    <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>تنزيل متعدد ذكي:</b> يتم تنزيل جميع الملفات بالعدد المطلوب تباعاً لضمان عدم ضياع أي ملف على الجوال.
+        ✅ <b>نظام آمن للجوال:</b> اضغط على زر المعالجة ثم حمل الملفات بالعدد الذي تريده بكل سهولة.
     </div>
 
     <div class="whatsapp">
@@ -119,6 +132,8 @@
     document.getElementById('processBtn').addEventListener('click', function () {
         const fileInput = document.getElementById('fileInput');
         const repeatCountInput = document.getElementById('repeatCount').value;
+        const resultsArea = document.getElementById('resultsArea');
+        resultsArea.innerHTML = ''; // مسح النتائج السابقة
 
         if (fileInput.files.length === 0) {
             alert('الرجاء اختيار ملف TXT أولاً');
@@ -150,28 +165,30 @@
             employeeLines.forEach(l => finalLines.push(l));
             let finalContent = finalLines.join("\r\n");
 
-            // استخدام حلقة زمنية لضمان تنزيل كل الملفات على الجوال بدون حظر المتصفح
-            let index = 0;
-            function downloadNext() {
-                if (index < totalFiles) {
-                    index++;
-                    let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
-                    let link = document.createElement("a");
-                    link.href = URL.createObjectURL(blob);
-                    
-                    // ترقيم الملفات لتظهر بوضوح في الملفات الحديثة
-                    link.download = `${originalName}_${index}.txt`;
-                    
-                    link.click();
+            // إنشاء زر مستقل لكل ملف لتنزيله يدوياً بدون قيود من المتصفح
+            for (let i = 1; i <= totalFiles; i++) {
+                let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
+                let url = URL.createObjectURL(blob);
 
-                    // الانتظار نصف ثانية قبل تحميل الملف التالي لتجاوز قيود متصفح الجوال
-                    setTimeout(downloadNext, 500);
-                } else {
-                    alert('تم تنزيل جميع الملفات بنجاح!');
-                }
+                let btn = document.createElement("a");
+                btn.href = url;
+                btn.download = `${originalName}_${i}.txt`;
+                btn.className = "download-btn";
+                btn.style.display = "block";
+                btn.style.textAlign = "center";
+                btn.style.padding = "12px";
+                btn.style.color = "white";
+                btn.style.backgroundColor = "#059669";
+                btn.style.borderRadius = "5px";
+                btn.style.textDecoration = "none";
+                btn.style.fontWeight = "bold";
+                btn.style.marginTop = "8px";
+                btn.innerHTML = `📥 تنزيل الملف رقم (${i})`;
+
+                resultsArea.appendChild(btn);
             }
 
-            downloadNext();
+            alert('تم تجهيز الملفات بنجاح! اضغط على الأزرار أدناه للتحميل.');
         };
 
         reader.readAsText(file);
