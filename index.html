@@ -100,7 +100,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ معالجة كاملة مع الحفاظ على التوقيع والأسرار
+        ⚙️ تحويل فواصل الأسطر وتوليد النسخ (مطابق للأصل تماماً)
     </div>
 
     <div class="form-group">
@@ -113,13 +113,13 @@
         <input type="number" id="repeatCount" value="1" min="1">
     </div>
 
-    <button id="processBtn">جهز الملفات للمعالجة (CRLF)</button>
+    <button id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
 
     <!-- منطقة أزرار التنزيل المستقلة -->
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>حفظ مطابق 100%:</b> يتم الحفاظ على محتوى الملف بالكامل بما في ذلك التوقيع الرقمي ونهاية الملف مع معيار (CRLF).
+        ✅ <b>نسخ مطابق 100%:</b> يتم أخذ محتوى الملف بالكامل دون أي حذف أو تعديل، وتحويله إلى معيار (CRLF) مع تجهيز الأزرار للتحميل.
     </div>
 
     <div class="whatsapp">
@@ -145,25 +145,18 @@
 
         const reader = new FileReader();
 
+        // قراءة الملف كـ ArrayBuffer لضمان عدم ضياع أي حرف أو بايت أو تشفير خاص
         reader.onload = function (e) {
-            let text = e.target.result;
+            let decoder = new TextDecoder('utf-8');
+            let text = decoder.decode(e.target.result);
             
-            // توحيد فواصل الأسطر واستخراج جميع الأسطر بدون حذف أي جزء (بما في ذلك التوقيع)
-            let cleanText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-            let lines = cleanText.split('\n');
-            
+            // تحويل فواصل الأسطر إلى معيار ويندوز CRLF بدقة وبدون حذف أي سطر
+            let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            let finalContent = normalizedText.replace(/\n/g, '\r\n');
+
             let totalFiles = parseInt(repeatCountInput) || 1;
-            let validLines = [];
 
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i] !== "") {
-                    validLines.push(lines[i]);
-                }
-            }
-
-            let finalContent = validLines.join("\r\n");
-
-            // إنشاء الأزرار بالعدد المطلوب بناءً على محتوى الملف الأصلي كاملاً
+            // إنشاء أزرار التحميل المستقلة بالعدد المطلوب
             for (let i = 1; i <= totalFiles; i++) {
                 let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
                 let url = URL.createObjectURL(blob);
@@ -186,10 +179,10 @@
                 resultsArea.appendChild(btn);
             }
 
-            alert('تم تجهيز الملفات بكامل محتواها وتوقيعاتها بنجاح!');
+            alert('تم تجهيز الملفات بنجاح مطابقة للأصل تماماً!');
         };
 
-        reader.readAsText(file);
+        reader.readAsArrayBuffer(file);
     });
 </script>
 
