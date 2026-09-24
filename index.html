@@ -115,11 +115,11 @@
 
     <button id="processBtn">جهز الملفات للمعالجة (CRLF)</button>
 
-    <!-- منطقة ظهور أزرار التحميل المستقلة لتجاوز قيود الجوال -->
+    <!-- منطقة ظهور أزرار التحميل المستقلة -->
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>نظام آمن للجوال:</b> اضغط على زر المعالجة ثم حمل الملفات بالعدد الذي تريده بكل سهولة.
+        ✅ <b>تجهيز سليم:</b> يتم إنشاء الملفات بالعدد المطلوب مع الهيدر الأساسي لكل ملف وبمعيار ويندوز (CRLF).
     </div>
 
     <div class="whatsapp">
@@ -133,7 +133,7 @@
         const fileInput = document.getElementById('fileInput');
         const repeatCountInput = document.getElementById('repeatCount').value;
         const resultsArea = document.getElementById('resultsArea');
-        resultsArea.innerHTML = ''; // مسح النتائج السابقة
+        resultsArea.innerHTML = ''; // مسح النتائج القديمة
 
         if (fileInput.files.length === 0) {
             alert('الرجاء اختيار ملف TXT أولاً');
@@ -161,12 +161,13 @@
                 }
             }
 
-            let finalLines = [header];
-            employeeLines.forEach(l => finalLines.push(l));
-            let finalContent = finalLines.join("\r\n");
-
-            // إنشاء زر مستقل لكل ملف لتنزيله يدوياً بدون قيود من المتصفح
+            // إنشاء الأزرار بالعدد المطلوب وبناء الملفات بشكل صحيح
             for (let i = 1; i <= totalFiles; i++) {
+                let finalLines = [header];
+                employeeLines.forEach(l => finalLines.push(l));
+
+                let finalContent = finalLines.join("\r\n");
+
                 let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
                 let url = URL.createObjectURL(blob);
 
@@ -188,7 +189,7 @@
                 resultsArea.appendChild(btn);
             }
 
-            alert('تم تجهيز الملفات بنجاح! اضغط على الأزرار أدناه للتحميل.');
+            alert('تم تجهيز الملفات بنجاح! اضغط على الأزرار بالأسفل للتحميل.');
         };
 
         reader.readAsText(file);
