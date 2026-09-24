@@ -1,66 +1,170 @@
-document.getElementById('processBtn').addEventListener('click', function () {
-    const fileInput = document.getElementById('fileInput');
-    const repeatCountInput = document.getElementById('repeatCount').value;
-    const outputNameInput = document.getElementById('outputName').value;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أبو سلطان - خدمات وتسهيل أعمال حماية الأجور (WPS)</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+            text-align: right;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="file"], input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            background-color: #1e3a8a;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .footer-note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 5px;
+            border-right: 4px solid #1e3a8a;
+        }
+        .whatsapp {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .whatsapp a {
+            color: #25d366;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
 
-    if (fileInput.files.length === 0) {
-        alert('الرجاء اختيار ملف TXT أولاً');
-        return;
-    }
+<div class="container">
+    <div class="header">
+        <h2>أبو سلطان</h2>
+        <p>خدمات وتسهيل أعمال حماية الأجور (WPS)</p>
+    </div>
 
-    const file = fileInput.files[0];
-    const reader = new FileReader();
+    <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
+        📝 ناسخ ملفات حماية الأجور (WPS)
+    </div>
 
-    reader.onload = function (e) {
-        let text = e.target.result;
-        let lines = text.split(/\r?\n/);
-        
-        let repeatCount = parseInt(repeatCountInput) || 1;
-        let processedLines = [];
+    <div class="form-group">
+        <label>اختيار ملف TXT</label>
+        <input type="file" id="fileInput" accept=".txt">
+    </div>
 
-        // معالجة رأس الملف (Header) لتغيير الرقم المرجعي أو بصمة الملف لمنع خطأ التكرار
-        if (lines.length > 0) {
-            let headerLine = lines[0];
-            // إضافة طابع زمني أو رقم عشوائي بسيط للرقم المرجعي في الهيدر ليكون فريداً
-            let randomId = Math.floor(Math.random() * 90000) + 10000;
-            // استبدال أو تعديل جزء من الهيدر لضمان عدم تطابق بصمة الملف مع الملف الأصلي
-            headerLine = headerLine.replace(/(\d{8,})/g, (match) => {
-                return parseInt(match) + Math.floor(Math.random() * 10) + 1;
-            });
-            processedLines.push(headerLine);
+    <div class="form-group">
+        <label>اسم الملف الناتج (مثال: 1170012)</label>
+        <input type="text" id="outputName" placeholder="مثال: 1170012">
+    </div>
+
+    <div class="form-group">
+        <label>عدد النسخ المطلوبة</label>
+        <input type="number" id="repeatCount" value="2" min="1">
+    </div>
+
+    <button id="processBtn">تكرار وتحميل الملفات المباشرة (TXT)</button>
+
+    <div class="footer-note">
+        🔒 <b>معالجة آمنة:</b> تتم العملية بالكامل داخل جهازك لضمان الخصوصية.<br>
+        ✅ <b>الحفاظ على التوقيع:</b> يتم النسخ بنفس التنسيق والدقة لضمان تحفيظها بـ "الأحدث".
+    </div>
+
+    <div class="whatsapp">
+        💬 للتواصل والدعم الفني عبر واتساب:<br>
+        <a href="https://wa.me/966581158968" target="_blank">📱 0581158968</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('processBtn').addEventListener('click', function () {
+        const fileInput = document.getElementById('fileInput');
+        const repeatCountInput = document.getElementById('repeatCount').value;
+        const outputNameInput = document.getElementById('outputName').value;
+
+        if (fileInput.files.length === 0) {
+            alert('الرجاء اختيار ملف TXT أولاً');
+            return;
         }
 
-        // نسخ وتكرار الأسطر الباقية (ما عدا الهيدر والتوقيع إن وجد)
-        for (let i = 0; i < repeatCount; i++) {
-            for (let j = 1; j < lines.length; j++) {
-                // تجنب تكرار سطر التوقيع القديم حرفياً في منتصف الملف إذا كان موجوداً
-                if (!lines[j].startsWith('-')) {
-                    processedLines.push(lines[j]);
-                }
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            let text = e.target.result;
+            
+            // توحيد فواصل الأسطر لتتوافق مع معيار Windows (CRLF) الذي تطلبه منصة مدد
+            let lines = text.split(/\r?\n/);
+            
+            let repeatCount = parseInt(repeatCountInput) || 1;
+            let processedLines = [];
+
+            // تكرار الأسطر بالكامل مع الحفاظ على البنية الأصلية
+            for (let i = 0; i < repeatCount; i++) {
+                lines.forEach(line => {
+                    processedLines.push(line);
+                });
             }
-        }
 
-        // إضافة التوقيع في النهاية أو الحفاظ على هيكل نظيف
-        let lastLine = lines[lines.length - 1];
-        if (lastLine && lastLine.startsWith('-')) {
-            processedLines.push(lastLine);
-        }
+            // إعادة تجميع الملف بفواصل الأسطر الصحيحة
+            let finalContent = processedLines.join("\r\n");
 
-        // إعادة تجميع الملف بفواصل الأسطر القياسية CRLF (\r\n) لضمان توافقها مع مدد
-        let finalContent = processedLines.join("\r\n");
+            // إنشاء ملف جديد وتحميله تلقائياً
+            let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = (outputNameInput ? outputNameInput : "wps_file") + ".txt";
+            link.click();
+        };
 
-        // توليد اسم فريد للملف الناتج بناءً على الوقت الحالي لتفادي تشابه الأسماء
-        let uniqueSuffix = Math.floor(Math.random() * 900) + 100;
-        let baseName = outputNameInput ? outputNameInput : "wps_file";
-        let finalFileName = `${baseName}_${uniqueSuffix}.txt`;
+        reader.readAsText(file);
+    });
+</script>
 
-        // إنشاء الملف وتنزيله تلقائياً
-        let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
-        let link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = finalFileName;
-        link.click();
-    };
-
-    reader.readAsText(file);
-});
+</body>
+</html>
