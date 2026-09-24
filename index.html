@@ -100,7 +100,7 @@
     </div>
 
     <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        ⚙️ التسمية الذكية بناءً على رقم الملف التسلسلي
+        ⚙️ استخراج الرقم الداخلي وتسمية الملفات
     </div>
 
     <div class="form-group">
@@ -119,7 +119,7 @@
     <div id="resultsArea"></div>
 
     <div class="footer-note">
-        ✅ <b>تسمية متطابقة:</b> يتم استخراج الرقم التسلسلي في نهاية أو داخل الملف ليكون هو أساس أسماء الملفات المحفوظة.
+        ✅ <b>قراءة الذكية:</b> يبحث النظام عن الرقم الداخلي (مثل المنتهي بـ 236) في محتوى الملف ليكون هو اسم الملف المحفوظ.
     </div>
 
     <div class="whatsapp">
@@ -151,35 +151,33 @@
             let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
             let finalContent = normalizedText.replace(/\n/g, '\r\n');
 
-            // استخراج الأرقام الموجودة في اسم الملف أو محتواه (مثل الأرقام التسلسلية كـ 236 وغيرها)
-            let baseName = "WPS_File";
+            // البحث عن الرقم الداخلي في محتوى الملف (مثل الأرقام التي تأتي بعد شرطة أو رموز مشابهة مثل 4551236 أو ما يشابهه)
+            let extractedName = "WPS_File";
             
-            // البحث عن الأرقام في اسم الملف الأصلي أولاً (مثل الرقم الأخير أو رقم النسخة في الاسم)
-            let nameMatches = file.name.match(/[\d_]+/g);
-            if (file.name.includes('.')) {
-                let cleanFileName = file.name.substring(0, file.name.lastIndexOf('.'));
-                let parts = cleanFileName.split('_');
-                if (parts.length > 0) {
-                    // اخذ آخر جزء أو الجزء الذي يحتوي على رقم التسلسل
-                    baseName = parts[parts.length - 1];
-                    if (baseName.length < 2 && parts.length > 1) {
-                        baseName = parts[parts.length - 2];
-                    }
+            // بحث عن نمط رقمي مثل الأرقام الطويلة داخل الأسطر (مثلاً ينتهي بـ 236 أو مشابه)
+            let matches = text.match(/\b\d*236\b/) || text.match(/\b\d{6,}\b/);
+            if (matches && matches.length > 0) {
+                extractedName = matches[0];
+            } else {
+                // بديل: إذا وجد رقم في اسم الملف الأصلي
+                let nameMatch = file.name.match(/\d+/);
+                if (nameMatch) {
+                    extractedName = nameMatch[0];
                 }
             }
 
             let totalFiles = parseInt(repeatCountInput) || 1;
 
-            // إنشاء أزرار التحميل مع التسمية المبنية على الرقم التسلسلي المستخرج
+            // إنشاء أزرار التحميل بالاسم المستخرج من داخل الملف
             for (let i = 1; i <= totalFiles; i++) {
                 let blob = new Blob([finalContent], { type: "text/plain;charset=utf-8" });
                 let url = URL.createObjectURL(blob);
 
                 let btn = document.createElement("button");
                 btn.className = "download-btn";
-                btn.innerHTML = `📥 حفظ الملف برقم (${baseName}) - نسخة (${i})`;
+                btn.innerHTML = `📥 حفظ الملف (${extractedName}) - نسخة (${i})`;
                 
-                let fileName = `${baseName}_${i}.txt`;
+                let fileName = `${extractedName}_${i}.txt`;
 
                 btn.onclick = function() {
                     let a = document.createElement("a");
@@ -193,7 +191,7 @@
                 resultsArea.appendChild(btn);
             }
 
-            alert('تم تجهيز الملفات وتسميتها بناءً على الرقم التسلسلي بنجاح!');
+            alert('تم استخراج رقم الملف الداخلي وتجهيز الأزرار بنجاح!');
         };
 
         reader.readAsArrayBuffer(file);
