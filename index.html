@@ -163,7 +163,7 @@
         <p>معالج وتسهيل ملفات حماية الأجور (WPS)</p>
     </div>
 
-    <div class="section-title">⚙️ التسمية الذكية الشاملة للرقم الموحد</div>
+    <div class="section-title">⚙️️ التسمية الذكية الشاملة للرقم الموحد</div>
 
     <div class="label-text">اختيار ملف TXT</div>
     <div class="file-input-container">
@@ -207,10 +207,11 @@
             reader.onload = function (e) {
                 let text = e.target.result;
                 
-                // استخراج رقم الملف الداخلي الحقيقي (مثل 01-2019591) من داخل النص
+                // استخراج رقم الملف الداخلي وتثبيته بشكل صحيح بالنظام الإنجليزي الصحيح
                 const internalMatch = text.match(/\b\d{2}-\d{7}\b/) || text.match(/\d{4,}-\d+/) || text.match(/\d{6,}/);
                 
                 if (internalMatch) {
+                    // جعل اتجاه اسم الملف إنجليزي بحت لضمان عدم انعكاس الأرقام
                     currentFileName = internalMatch[0] + ".txt";
                 } else {
                     currentFileName = file.name;
@@ -226,7 +227,8 @@
 
     function updateSaveButtonText() {
         const count = fileCountInput.value || 1;
-        saveBtn.textContent = `حفظ الملف (${currentFileName}) - نسخة (${count})`;
+        // استخدام الوسم dir="ltr" في النص البرمجي لضمان بقاء اسم الملف مترتب صح
+        saveBtn.innerHTML = `حفظ الملف (<span style="direction: ltr; display: inline-block;">${currentFileName}</span>) - نسخة (${count})`;
     }
 
     fileCountInput.addEventListener('input', function() {
@@ -256,7 +258,6 @@
             const a = document.createElement('a');
             a.href = url;
             
-            // حفظ الملف برقم الملف المستخرج من داخله مع دعم النسخ المتعددة
             if (count > 1) {
                 const dotIndex = currentFileName.lastIndexOf('.');
                 if (dotIndex !== -1) {
