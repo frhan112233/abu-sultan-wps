@@ -158,7 +158,7 @@
     <button class="btn btn-success" id="saveBtn" style="display:none;">حفظ الملف المعالج</button>
 
     <div class="footer-note">
-        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية توليد حق 30 نسخة.
+        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236).
     </div>
 
     <div class="support">
@@ -172,47 +172,32 @@
     const fileName = document.getElementById('fileName');
     const processBtn = document.getElementById('processBtn');
     const saveBtn = document.getElementById('saveBtn');
+    const fileCountSelect = document.getElementById('fileCount');
     
     let processedContent = "";
-    let originalFileName = "WPS_Processed.txt";
+    let extractedNumber = "WPS_Processed";
 
     fileInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
-            originalFileName = file.name;
             fileName.textContent = file.name;
+            
+            // استخراج الرقم الموحد من اسم الملف (يبحث عن أرقام أو صيغ مثل التي في اسم الملف الخاص بك)
+            const match = file.name.match(/(\d{4,}-\d+|\d{6,})/);
+            if (match) {
+                extractedNumber = match[0];
+            } else {
+                // محاولة أخرى لأخذ أرقام من اسم الملف
+                const digitsOnly = file.name.replace(/[^0-9]/g, '');
+                if (digitsOnly.length >= 5) {
+                    extractedNumber = digitsOnly.substring(0, 10);
+                } else {
+                    extractedNumber = "WPS_" + Date.now();
+                }
+            }
+
             const reader = new FileReader();
             reader.onload = function (e) {
                 let text = e.target.result;
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                processedContent = text.replace(/\n/g, '\r\n');
-            };
-            reader.readAsText(file, 'UTF-8');
-        }
-    });
-
-    processBtn.addEventListener('click', function () {
-        if (!processedContent) {
-            alert('الرجاء اختيار ملف نصي أولاً!');
-            return;
-        }
-        alert('تمت معالجة الفواصل وتجهيز الملف بنجاح!');
-        saveBtn.style.display = 'block';
-    });
-
-    saveBtn.addEventListener('click', function () {
-        if (!processedContent) return;
-        const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Processed_' + originalFileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-</script>
-
-</body>
-</html>
+                processed
