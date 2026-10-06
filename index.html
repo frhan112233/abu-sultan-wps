@@ -163,7 +163,7 @@
         <p>معالج وتسهيل ملفات حماية الأجور (WPS)</p>
     </div>
 
-    <div class="section-title">⚙️️ التسمية الذكية الشاملة للرقم الموحد</div>
+    <div class="section-title">⚙ التسمية الذكية الشاملة للرقم الموحد</div>
 
     <div class="label-text">اختيار ملف TXT</div>
     <div class="file-input-container">
@@ -179,7 +179,7 @@
     <button class="btn-success" id="saveBtn">حفظ الملف</button>
 
     <div class="footer-note">
-        ✅ دعم شامل: استخراج رقم الملف الحقيقي من داخل النص وحفظه تلقائياً مع تعديل فواصل الأسطر.
+        ✅ مطابقة تامة: استخراج رقم الملف وحفظه بدون أسطر فارغة إضافية مع دعم معيار CRLF.
     </div>
 
     <div class="support">
@@ -207,19 +207,19 @@
             reader.onload = function (e) {
                 let text = e.target.result;
                 
-                // استخراج رقم الملف الداخلي وتثبيته بشكل صحيح بالنظام الإنجليزي الصحيح
+                // استخراج رقم الملف الداخلي وتثبيته بالصيغة الإنجليزية الصحيحة
                 const internalMatch = text.match(/\b\d{2}-\d{7}\b/) || text.match(/\d{4,}-\d+/) || text.match(/\d{6,}/);
                 
                 if (internalMatch) {
-                    // جعل اتجاه اسم الملف إنجليزي بحت لضمان عدم انعكاس الأرقام
                     currentFileName = internalMatch[0] + ".txt";
                 } else {
                     currentFileName = file.name;
                 }
 
-                // تنظيف فواصل الأسطر وضمان معيار CRLF بدقة كاملة للملف
+                // تنظيف فواصل الأسطر وإزالة الأسطر الفارغة تماماً للمطابقة الكاملة
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                processedContent = text.replace(/\n/g, '\r\n');
+                let lines = text.split('\n').filter(line => line.trim() !== '');
+                processedContent = lines.join('\r\n');
             };
             reader.readAsText(file, 'UTF-8');
         }
@@ -227,7 +227,6 @@
 
     function updateSaveButtonText() {
         const count = fileCountInput.value || 1;
-        // استخدام الوسم dir="ltr" في النص البرمجي لضمان بقاء اسم الملف مترتب صح
         saveBtn.innerHTML = `حفظ الملف (<span style="direction: ltr; display: inline-block;">${currentFileName}</span>) - نسخة (${count})`;
     }
 
