@@ -179,7 +179,7 @@
     <button class="btn-success" id="saveBtn">حفظ الملف</button>
 
     <div class="footer-note">
-        ✅ دعم شامل: الحفاظ على اسم الملف الأساسي الخاص بكل شركة وتعديل فواصل الأسطر مع إمكانية تحديد عدد النسخ.
+        ✅ دعم شامل: استخراج رقم الملف الحقيقي من داخل النص وحفظه تلقائياً مع تعديل فواصل الأسطر.
     </div>
 
     <div class="support">
@@ -202,11 +202,20 @@
         const file = event.target.files[0];
         if (file) {
             fileName.textContent = file.name;
-            currentFileName = file.name; // أخذ اسم الملف المرفوع أياً كان رقمه
 
             const reader = new FileReader();
             reader.onload = function (e) {
                 let text = e.target.result;
+                
+                // استخراج رقم الملف الداخلي الحقيقي (مثل 01-2019591) من داخل النص
+                const internalMatch = text.match(/\b\d{2}-\d{7}\b/) || text.match(/\d{4,}-\d+/) || text.match(/\d{6,}/);
+                
+                if (internalMatch) {
+                    currentFileName = internalMatch[0] + ".txt";
+                } else {
+                    currentFileName = file.name;
+                }
+
                 // تنظيف فواصل الأسطر وضمان معيار CRLF بدقة كاملة للملف
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
                 processedContent = text.replace(/\n/g, '\r\n');
@@ -247,7 +256,7 @@
             const a = document.createElement('a');
             a.href = url;
             
-            // حفظ الملف بنفس اسم الملف المرفوع بغض النظر عن اختلاف رقمه
+            // حفظ الملف برقم الملف المستخرج من داخله مع دعم النسخ المتعددة
             if (count > 1) {
                 const dotIndex = currentFileName.lastIndexOf('.');
                 if (dotIndex !== -1) {
