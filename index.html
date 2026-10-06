@@ -142,11 +142,15 @@
             font-size: 13px;
             color: #333;
         }
-        .support span {
+        .support a {
             color: #15803d;
             font-weight: bold;
             direction: ltr;
             display: inline-block;
+            text-decoration: none;
+        }
+        .support a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -186,89 +190,9 @@
 
     <div class="support">
         💬 للتواصل والدعم الفني:<br>
-        <span>0581158968</span> 📱
+        <a href="https://wa.me/966581158968" target="_blank">0581158968</a> 📱
     </div>
 </div>
 
 <script>
     const fileInput = document.getElementById('fileInput');
-    const fileName = document.getElementById('fileName');
-    const processBtn = document.getElementById('processBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const fileCountSelect = document.getElementById('fileCount');
-    
-    let processedContent = "";
-    let extractedNumber = "WPS_Processed";
-
-    fileInput.addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            fileName.textContent = file.name;
-            
-            // استخراج الرقم الموحد بدقة من اسم الملف
-            const match = file.name.match(/(\d{4,}-\d+|\d{6,})/);
-            if (match) {
-                extractedNumber = match[0];
-            } else {
-                const digitsOnly = file.name.replace(/[^0-9]/g, '');
-                if (digitsOnly.length >= 5) {
-                    extractedNumber = digitsOnly.substring(0, 10);
-                } else {
-                    extractedNumber = "WPS_" + Date.now();
-                }
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                let text = e.target.result;
-                text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                processedContent = text.replace(/\n/g, '\r\n');
-            };
-            reader.readAsText(file, 'UTF-8');
-        }
-    });
-
-    function updateSaveButtonText() {
-        const count = fileCountSelect.value;
-        saveBtn.textContent = `حفظ الملف (${extractedNumber}) - نسخة (${count})`;
-    }
-
-    fileCountSelect.addEventListener('change', function() {
-        if (processedContent) {
-            updateSaveButtonText();
-        }
-    });
-
-    processBtn.addEventListener('click', function () {
-        if (!processedContent) {
-            alert('الرجاء اختيار ملف نصي أولاً!');
-            return;
-        }
-        updateSaveButtonText();
-        saveBtn.style.display = 'block';
-        alert('تمت معالجة وتجهيز الملفات بنجاح!');
-    });
-
-    saveBtn.addEventListener('click', function () {
-        if (!processedContent) return;
-        
-        const count = parseInt(fileCountSelect.value) || 1;
-        
-        for (let i = 1; i <= count; i++) {
-            const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            
-            a.download = (count > 1) ? `${extractedNumber}_copy${i}.txt` : `${extractedNumber}.txt`;
-            
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    });
-</script>
-
-</body>
-</html>
