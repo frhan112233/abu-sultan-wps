@@ -3,79 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معالج ملفات حماية الأجور - أبو سلطان</title>
+    <title>أبو سلطان - معالج ملفات حماية الأجور</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
+            background-color: #eef2f7;
             margin: 0;
             padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 90vh;
+            min-height: 95vh;
         }
         .card {
             background: #ffffff;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
         }
-        h2 {
-            color: #333;
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-        .file-upload {
-            border: 2px dashed #007bff;
-            padding: 15px;
+        .header-box {
+            background-color: #1d4ed8;
+            color: white;
+            padding: 20px;
             border-radius: 8px;
-            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .header-box h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .header-box p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .file-box {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 10px;
             background: #f8f9fa;
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
+            text-align: right;
+        }
+        .file-box span {
+            font-size: 13px;
+            color: #555;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 250px;
         }
         input[type="file"] {
             display: none;
         }
-        .file-name {
-            margin-top: 8px;
-            color: #555;
+        .upload-btn {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
             font-size: 13px;
-            word-break: break-all;
+            color: #333;
+        }
+        .upload-btn:hover {
+            background-color: #dde2e6;
+        }
+        .select-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            background-color: #fff;
         }
         .btn {
-            background-color: #007bff;
+            background-color: #1d4ed8;
             color: white;
             border: none;
             padding: 12px;
-            font-size: 15px;
+            font-size: 16px;
             border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #1e40af;
         }
         .btn-success {
-            background-color: #28a745;
+            background-color: #15803d;
+        }
+        .btn-success:hover {
+            background-color: #166534;
+        }
+        .footer-note {
+            font-size: 12px;
+            color: #555;
+            border-top: 1px dashed #dee2e6;
+            padding-top: 12px;
+            margin-top: 15px;
+            text-align: right;
+        }
+        .support {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #333;
+        }
+        .support span {
+            color: #15803d;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>معالج ملفات حماية الأجور</h2>
-    
-    <label class="file-upload" for="fileInput">
-        <span style="color: #007bff; font-weight: bold;">اضغط هنا لتحديد ملف الرواتب (.txt)</span>
-        <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
-    </label>
+    <div class="header-box">
+        <h2>أبو سلطان</h2>
+        <p>معالج وتسهيل ملفات حماية الأجور (WPS)</p>
+    </div>
+
+    <div class="section-title">⚙️ التسمية الذكية الشاملة للرقم الموحد</div>
+
+    <div style="text-align: right; font-size: 13px; margin-bottom: 5px; color: #444;">اختيار ملف TXT</div>
+    <div class="file-box">
+        <span id="fileName">لم يتم اختيار أي ملف</span>
+        <label class="upload-btn" for="fileInput">اختيار ملف</label>
+    </div>
     <input type="file" id="fileInput" accept=".txt">
 
-    <button class="btn" id="processBtn">معالجة وتصحيح الفواصل</button>
+    <div style="text-align: right; font-size: 13px; margin-bottom: 5px; color: #444;">عدد الملفات المطلوبة</div>
+    <select class="select-box" id="fileCount">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+    </select>
+
+    <button class="btn" id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
     <button class="btn btn-success" id="saveBtn" style="display:none;">حفظ الملف المعالج</button>
+
+    <div class="footer-note">
+        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية توليد حق 30 نسخة.
+    </div>
+
+    <div class="support">
+        💬 للتواصل والدعم الفني:<br>
+        <span>0581158968</span> 📱
+    </div>
 </div>
 
 <script>
@@ -107,7 +196,7 @@
             alert('الرجاء اختيار ملف نصي أولاً!');
             return;
         }
-        alert('تمت معالجة الفواصل بنجاح!');
+        alert('تمت معالجة الفواصل وتجهيز الملف بنجاح!');
         saveBtn.style.display = 'block';
     });
 
