@@ -1,45 +1,96 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const fileInput = document.getElementById('fileInput'); 
-    const processBtn = document.getElementById('processBtn'); 
-    const saveBtn = document.getElementById('saveBtn'); 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أبو سلطان - معالج ملفات حماية الأجور</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f7f6;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        input, button {
+            margin: 15px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>معالج ملفات حماية الأجور (WPS)</h2>
+    <p>قم بتحديد ملف الرواتب لمعالجته وضبطه بصيغة CRLF المطلوبة:</p>
     
-    let processedContent = "";
+    <input type="file" id="fileInput" accept=".txt"><br>
+    <button id="processBtn">معالجة الملف</button><br>
+    <button id="saveBtn">حفظ الملف المعالج</button>
+</div>
 
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById('fileInput');
+        const processBtn = document.getElementById('processBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        let processedContent = "";
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            let text = e.target.result;
-            text = text.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
-            processedContent = text;
-        };
-        reader.readAsText(file, 'UTF-8');
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                let text = e.target.result;
+                text = text.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
+                processedContent = text;
+            };
+            reader.readAsText(file, 'UTF-8');
+        });
+
+        processBtn.addEventListener('click', function () {
+            if (!processedContent) {
+                alert('الرجاء اختيار ملف نصي أولاً!');
+                return;
+            }
+            processedContent = processedContent.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
+            alert('تم تجهيز الملف ومعالجة الفواصل بنظام CRLF بنجاح!');
+        });
+
+        saveBtn.addEventListener('click', function () {
+            if (!processedContent) {
+                alert('لا توجد بيانات جاهزة للحفظ!');
+                return;
+            }
+            const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'WPS_Processed_CRLF.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
     });
+</script>
 
-    processBtn.addEventListener('click', function() {
-        if (!processedContent) {
-            alert('الرجاء اختيار ملف نصي أولاً!');
-            return;
-        }
-        processedContent = processedContent.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
-        alert('تم تجهيز الملف ومعالجة الفواصل بنظام CRLF بنجاح!');
-    });
-
-    saveBtn.addEventListener('click', function() {
-        if (!processedContent) {
-            alert('لا توجد بيانات جاهزة للحفظ!');
-            return;
-        }
-        const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'WPS_Processed_CRLF.txt'; 
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-});
+</body>
+</html>
