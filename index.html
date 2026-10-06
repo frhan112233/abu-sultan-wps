@@ -114,6 +114,15 @@
         }
         .btn-success {
             background-color: #15803d;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+            font-weight: bold;
             display: none;
         }
         .btn-success:hover {
@@ -169,7 +178,7 @@
     </select>
 
     <button class="btn" id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
-    <button class="btn btn-success" id="saveBtn">حفظ الملف</button>
+    <button class="btn-success" id="saveBtn">حفظ الملف</button>
 
     <div class="footer-note">
         ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية توليد حق 30 نسخة.
@@ -219,16 +228,16 @@
         }
     });
 
+    function updateSaveButtonText() {
+        const count = fileCountSelect.value;
+        saveBtn.textContent = `حفظ الملف (${extractedNumber}) - نسخة (${count})`;
+    }
+
     fileCountSelect.addEventListener('change', function() {
         if (processedContent) {
             updateSaveButtonText();
         }
     });
-
-    function updateSaveButtonText() {
-        const count = fileCountSelect.value;
-        saveBtn.textContent = `حفظ الملف (${extractedNumber}) - نسخة (${count})`;
-    }
 
     processBtn.addEventListener('click', function () {
         if (!processedContent) {
