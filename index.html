@@ -87,7 +87,7 @@
             flex-grow: 1;
             text-align: right;
         }
-        .select-box {
+        .input-number {
             width: 100%;
             padding: 10px;
             border: 1px solid #ced4da;
@@ -96,9 +96,10 @@
             font-size: 14px;
             background-color: #fff;
             text-align: right;
+            box-sizing: border-box;
         }
         .btn {
-            background-color: #1d4ed8;
+            background-color: #15803d;
             color: white;
             border: none;
             padding: 12px;
@@ -110,7 +111,7 @@
             font-weight: bold;
         }
         .btn:hover {
-            background-color: #1e40af;
+            background-color: #166534;
         }
         .btn-success {
             background-color: #15803d;
@@ -167,32 +168,4 @@
     <div class="label-text">اختيار ملف TXT</div>
     <div class="file-input-container">
         <span class="file-name-display" id="fileName">لم يتم اختيار أي ملف</span>
-        <label class="custom-file-upload" for="fileInput">اختيار ملف</label>
-        <input type="file" id="fileInput" accept=".txt">
-    </div>
-
-    <div class="label-text">عدد الملفات المطلوبة</div>
-    <select class="select-box" id="fileCount">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="30">30</option>
-    </select>
-
-    <button class="btn" id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
-    <button class="btn-success" id="saveBtn">حفظ الملف</button>
-
-    <div class="footer-note">
-        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية توليد حق 30 نسخة.
-    </div>
-
-    <div class="support">
-        💬 للتواصل والدعم الفني:<br>
-        <a href="https://wa.me/966581158968" target="_blank">0581158968</a> 📱
-    </div>
-</div>
-
-<script>
-    const fileInput = document.getElementById('fileInput');
+        <label class="custom-file-upload" for="fileInput">اختيار ملف</
