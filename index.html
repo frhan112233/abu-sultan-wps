@@ -46,39 +46,46 @@
             margin-bottom: 12px;
             font-weight: bold;
         }
-        .file-box {
+        .label-text {
+            text-align: right;
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        .file-input-container {
+            display: flex;
             border: 1px solid #ced4da;
             border-radius: 6px;
-            padding: 10px;
             background: #f8f9fa;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            overflow: hidden;
             margin-bottom: 15px;
-            text-align: right;
+            align-items: center;
         }
-        .file-box span {
+        .file-input-container input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            background-color: #e9ecef;
+            border-left: 1px solid #ced4da;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333;
+            white-space: nowrap;
+        }
+        .custom-file-upload:hover {
+            background-color: #dde2e6;
+        }
+        .file-name-display {
+            padding: 0 10px;
             font-size: 13px;
             color: #555;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 250px;
-        }
-        input[type="file"] {
-            display: none;
-        }
-        .upload-btn {
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #333;
-        }
-        .upload-btn:hover {
-            background-color: #dde2e6;
+            flex-grow: 1;
+            text-align: right;
         }
         .select-box {
             width: 100%;
@@ -88,13 +95,14 @@
             margin-bottom: 15px;
             font-size: 14px;
             background-color: #fff;
+            text-align: right;
         }
         .btn {
             background-color: #1d4ed8;
             color: white;
             border: none;
             padding: 12px;
-            font-size: 16px;
+            font-size: 15px;
             border-radius: 6px;
             cursor: pointer;
             width: 100%;
@@ -106,6 +114,7 @@
         }
         .btn-success {
             background-color: #15803d;
+            display: none;
         }
         .btn-success:hover {
             background-color: #166534;
@@ -117,6 +126,7 @@
             padding-top: 12px;
             margin-top: 15px;
             text-align: right;
+            line-height: 1.6;
         }
         .support {
             margin-top: 15px;
@@ -126,6 +136,8 @@
         .support span {
             color: #15803d;
             font-weight: bold;
+            direction: ltr;
+            display: inline-block;
         }
     </style>
 </head>
@@ -137,28 +149,30 @@
         <p>معالج وتسهيل ملفات حماية الأجور (WPS)</p>
     </div>
 
-    <div class="section-title">⚙️️ التسمية الذكية الشاملة للرقم الموحد</div>
+    <div class="section-title">⚙️ التسمية الذكية الشاملة للرقم الموحد</div>
 
-    <div style="text-align: right; font-size: 13px; margin-bottom: 5px; color: #444;">اختيار ملف TXT</div>
-    <div class="file-box">
-        <span id="fileName">لم يتم اختيار أي ملف</span>
-        <label class="upload-btn" for="fileInput">اختيار ملف</label>
+    <div class="label-text">اختيار ملف TXT</div>
+    <div class="file-input-container">
+        <span class="file-name-display" id="fileName">لم يتم اختيار أي ملف</span>
+        <label class="custom-file-upload" for="fileInput">اختيار ملف</label>
+        <input type="file" id="fileInput" accept=".txt">
     </div>
-    <input type="file" id="fileInput" accept=".txt">
 
-    <div style="text-align: right; font-size: 13px; margin-bottom: 5px; color: #444;">عدد الملفات المطلوبة</div>
+    <div class="label-text">عدد الملفات المطلوبة</div>
     <select class="select-box" id="fileCount">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="5">5</option>
         <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
     </select>
 
     <button class="btn" id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
-    <button class="btn btn-success" id="saveBtn" style="display:none;">حفظ الملف برقم المنشأة</button>
+    <button class="btn btn-success" id="saveBtn">حفظ الملف</button>
 
     <div class="footer-note">
-        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236).
+        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية توليد حق 30 نسخة.
     </div>
 
     <div class="support">
@@ -182,6 +196,7 @@
         if (file) {
             fileName.textContent = file.name;
             
+            // استخراج الرقم الموحد بدقة من اسم الملف
             const match = file.name.match(/(\d{4,}-\d+|\d{6,})/);
             if (match) {
                 extractedNumber = match[0];
@@ -204,13 +219,25 @@
         }
     });
 
+    fileCountSelect.addEventListener('change', function() {
+        if (processedContent) {
+            updateSaveButtonText();
+        }
+    });
+
+    function updateSaveButtonText() {
+        const count = fileCountSelect.value;
+        saveBtn.textContent = `حفظ الملف (${extractedNumber}) - نسخة (${count})`;
+    }
+
     processBtn.addEventListener('click', function () {
         if (!processedContent) {
             alert('الرجاء اختيار ملف نصي أولاً!');
             return;
         }
-        alert('تمت معالجة الفواصل وتجهيز الملف بنجاح!');
+        updateSaveButtonText();
         saveBtn.style.display = 'block';
+        alert('تمت معالجة وتجهيز الملفات بنجاح!');
     });
 
     saveBtn.addEventListener('click', function () {
