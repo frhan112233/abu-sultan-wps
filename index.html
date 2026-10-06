@@ -7,67 +7,59 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #eef2f7;
+            background-color: #f4f7f6;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 90vh;
         }
         .card {
             background: #ffffff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             text-align: center;
         }
         h2 {
             color: #333;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 15px;
         }
         .file-upload {
             border: 2px dashed #007bff;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
             cursor: pointer;
             background: #f8f9fa;
-            margin-bottom: 20px;
-            transition: 0.3s;
-        }
-        .file-upload:hover {
-            background: #e9ecef;
+            display: block;
+            margin-bottom: 15px;
         }
         input[type="file"] {
             display: none;
         }
         .file-name {
-            margin-top: 10px;
+            margin-top: 8px;
             color: #555;
-            font-size: 14px;
+            font-size: 13px;
+            word-break: break-all;
         }
         .btn {
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 15px;
             border-radius: 6px;
             cursor: pointer;
             width: 100%;
             margin-top: 10px;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            background-color: #0056b3;
         }
         .btn-success {
             background-color: #28a745;
-        }
-        .btn-success:hover {
-            background-color: #218838;
         }
     </style>
 </head>
@@ -77,7 +69,7 @@
     <h2>معالج ملفات حماية الأجور</h2>
     
     <label class="file-upload" for="fileInput">
-        <span>اضغط هنا لتحديد ملف الرواتب (.txt)</span>
+        <span style="color: #007bff; font-weight: bold;">اضغط هنا لتحديد ملف الرواتب (.txt)</span>
         <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
     </label>
     <input type="file" id="fileInput" accept=".txt">
@@ -103,7 +95,6 @@
             const reader = new FileReader();
             reader.onload = function (e) {
                 let text = e.target.result;
-                // تنظيف فواصل السطور القديمة تماماً لتوحيدها بنظام CRLF السليم دون تكرار
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
                 processedContent = text.replace(/\n/g, '\r\n');
             };
@@ -116,15 +107,12 @@
             alert('الرجاء اختيار ملف نصي أولاً!');
             return;
         }
-        alert('تمت معالجة الفواصل وتجهيز الملف بنجاح!');
+        alert('تمت معالجة الفواصل بنجاح!');
         saveBtn.style.display = 'block';
     });
 
     saveBtn.addEventListener('click', function () {
-        if (!processedContent) {
-            alert('لا توجد بيانات للحفظ!');
-            return;
-        }
+        if (!processedContent) return;
         const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
