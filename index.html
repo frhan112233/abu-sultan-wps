@@ -137,7 +137,7 @@
         <p>معالج وتسهيل ملفات حماية الأجور (WPS)</p>
     </div>
 
-    <div class="section-title">⚙️ التسمية الذكية الشاملة للرقم الموحد</div>
+    <div class="section-title">⚙️️ التسمية الذكية الشاملة للرقم الموحد</div>
 
     <div style="text-align: right; font-size: 13px; margin-bottom: 5px; color: #444;">اختيار ملف TXT</div>
     <div class="file-box">
@@ -155,7 +155,7 @@
     </select>
 
     <button class="btn" id="processBtn">معالجة وتجهيز الملفات (CRLF)</button>
-    <button class="btn btn-success" id="saveBtn" style="display:none;">حفظ الملف المعالج</button>
+    <button class="btn btn-success" id="saveBtn" style="display:none;">حفظ الملف برقم المنشأة</button>
 
     <div class="footer-note">
         ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236).
@@ -182,12 +182,10 @@
         if (file) {
             fileName.textContent = file.name;
             
-            // استخراج الرقم الموحد من اسم الملف (يبحث عن أرقام أو صيغ مثل التي في اسم الملف الخاص بك)
             const match = file.name.match(/(\d{4,}-\d+|\d{6,})/);
             if (match) {
                 extractedNumber = match[0];
             } else {
-                // محاولة أخرى لأخذ أرقام من اسم الملف
                 const digitsOnly = file.name.replace(/[^0-9]/g, '');
                 if (digitsOnly.length >= 5) {
                     extractedNumber = digitsOnly.substring(0, 10);
@@ -200,4 +198,41 @@
             reader.onload = function (e) {
                 let text = e.target.result;
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                processed
+                processedContent = text.replace(/\n/g, '\r\n');
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+    });
+
+    processBtn.addEventListener('click', function () {
+        if (!processedContent) {
+            alert('الرجاء اختيار ملف نصي أولاً!');
+            return;
+        }
+        alert('تمت معالجة الفواصل وتجهيز الملف بنجاح!');
+        saveBtn.style.display = 'block';
+    });
+
+    saveBtn.addEventListener('click', function () {
+        if (!processedContent) return;
+        
+        const count = parseInt(fileCountSelect.value) || 1;
+        
+        for (let i = 1; i <= count; i++) {
+            const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            a.download = (count > 1) ? `${extractedNumber}_copy${i}.txt` : `${extractedNumber}.txt`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    });
+</script>
+
+</body>
+</html>
