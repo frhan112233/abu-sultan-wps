@@ -179,7 +179,7 @@
     <button class="btn-success" id="saveBtn">حفظ الملف</button>
 
     <div class="footer-note">
-        ✅ دعم شامل: استخراج دقيق للرقم الموحد بجميع صيغه (مثل 4-68944 أو 01-4551236) مع إمكانية تحديد عدد النسخ يدويًا.
+        ✅ دعم شامل: الحفاظ على اسم الملف الأساسي الخاص بكل شركة وتعديل فواصل الأسطر مع إمكانية تحديد عدد النسخ.
     </div>
 
     <div class="support">
@@ -196,28 +196,18 @@
     const fileCountInput = document.getElementById('fileCount');
     
     let processedContent = "";
-    let extractedNumber = "WPS_Processed";
+    let currentFileName = "";
 
     fileInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
             fileName.textContent = file.name;
-            
-            const match = file.name.match(/(\d{4,}-\d+|\d{6,})/);
-            if (match) {
-                extractedNumber = match[0];
-            } else {
-                const digitsOnly = file.name.replace(/[^0-9]/g, '');
-                if (digitsOnly.length >= 5) {
-                    extractedNumber = digitsOnly.substring(0, 10);
-                } else {
-                    extractedNumber = "WPS_" + Date.now();
-                }
-            }
+            currentFileName = file.name; // أخذ اسم الملف المرفوع أياً كان رقمه
 
             const reader = new FileReader();
             reader.onload = function (e) {
                 let text = e.target.result;
+                // تنظيف فواصل الأسطر وضمان معيار CRLF بدقة كاملة للملف
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
                 processedContent = text.replace(/\n/g, '\r\n');
             };
@@ -227,7 +217,7 @@
 
     function updateSaveButtonText() {
         const count = fileCountInput.value || 1;
-        saveBtn.textContent = `حفظ الملف (${extractedNumber}) - نسخة (${count})`;
+        saveBtn.textContent = `حفظ الملف (${currentFileName}) - نسخة (${count})`;
     }
 
     fileCountInput.addEventListener('input', function() {
@@ -257,7 +247,17 @@
             const a = document.createElement('a');
             a.href = url;
             
-            a.download = (count > 1) ? `${extractedNumber}_copy${i}.txt` : `${extractedNumber}.txt`;
+            // حفظ الملف بنفس اسم الملف المرفوع بغض النظر عن اختلاف رقمه
+            if (count > 1) {
+                const dotIndex = currentFileName.lastIndexOf('.');
+                if (dotIndex !== -1) {
+                    a.download = currentFileName.substring(0, dotIndex) + `_copy${i}` + currentFileName.substring(dotIndex);
+                } else {
+                    a.download = `${currentFileName}_copy${i}.txt`;
+                }
+            } else {
+                a.download = currentFileName;
+            }
             
             document.body.appendChild(a);
             a.click();
