@@ -3,92 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أبو سلطان - معالج ملفات حماية الأجور</title>
+    <title>معالج ملفات حماية الأجور - أبو سلطان</title>
     <style>
         body {
-            font-family: Tahoma, sans-serif;
-            background-color: #f4f7f6;
-            text-align: center;
-            padding: 50px;
+            font-family: Arial, sans-serif;
+            background-color: #eef2f7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        .container {
-            background: white;
+        .card {
+            background: #ffffff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            display: inline-block;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
         }
-        input, button {
-            margin: 15px 0;
-            padding: 10px;
-            font-size: 16px;
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
         }
-        button {
-            background-color: #007BFF;
+        .file-upload {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .file-upload:hover {
+            background: #e9ecef;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-name {
+            margin-top: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+        .btn {
+            background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
             cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.3s;
         }
-        button:hover {
+        .btn:hover {
             background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>معالج ملفات حماية الأجور (WPS)</h2>
-    <p>قم بتحديد ملف الرواتب لمعالجته وضبطه بصيغة CRLF المطلوبة:</p>
+<div class="card">
+    <h2>معالج ملفات حماية الأجور</h2>
     
-    <input type="file" id="fileInput" accept=".txt"><br>
-    <button id="processBtn">معالجة الملف</button><br>
-    <button id="saveBtn">حفظ الملف المعالج</button>
+    <label class="file-upload" for="fileInput">
+        <span>اضغط هنا لتحديد ملف الرواتب (.txt)</span>
+        <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
+    </label>
+    <input type="file" id="fileInput" accept=".txt">
+
+    <button class="btn" id="processBtn">معالجة وتصحيح الفواصل</button>
+    <button class="btn btn-success" id="saveBtn" style="display:none;">حفظ الملف المعالج</button>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.getElementById('fileInput');
-        const processBtn = document.getElementById('processBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        let processedContent = "";
+    const fileInput = document.getElementById('fileInput');
+    const fileName = document.getElementById('fileName');
+    const processBtn = document.getElementById('processBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    
+    let processedContent = "";
+    let originalFileName = "WPS_Processed.txt";
 
-        fileInput.addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
+    fileInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            originalFileName = file.name;
+            fileName.textContent = file.name;
             const reader = new FileReader();
             reader.onload = function (e) {
                 let text = e.target.result;
-                text = text.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
-                processedContent = text;
+                // تنظيف فواصل السطور القديمة تماماً لتوحيدها بنظام CRLF السليم دون تكرار
+                text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                processedContent = text.replace(/\n/g, '\r\n');
             };
             reader.readAsText(file, 'UTF-8');
-        });
+        }
+    });
 
-        processBtn.addEventListener('click', function () {
-            if (!processedContent) {
-                alert('الرجاء اختيار ملف نصي أولاً!');
-                return;
-            }
-            processedContent = processedContent.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
-            alert('تم تجهيز الملف ومعالجة الفواصل بنظام CRLF بنجاح!');
-        });
+    processBtn.addEventListener('click', function () {
+        if (!processedContent) {
+            alert('الرجاء اختيار ملف نصي أولاً!');
+            return;
+        }
+        alert('تمت معالجة الفواصل وتجهيز الملف بنجاح!');
+        saveBtn.style.display = 'block';
+    });
 
-        saveBtn.addEventListener('click', function () {
-            if (!processedContent) {
-                alert('لا توجد بيانات جاهزة للحفظ!');
-                return;
-            }
-            const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'WPS_Processed_CRLF.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
+    saveBtn.addEventListener('click', function () {
+        if (!processedContent) {
+            alert('لا توجد بيانات للحفظ!');
+            return;
+        }
+        const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Processed_' + originalFileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     });
 </script>
 
