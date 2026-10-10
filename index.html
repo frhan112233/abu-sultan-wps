@@ -216,9 +216,9 @@
                     currentFileName = file.name;
                 }
 
-                // تنظيف فواصل الأسطر وإزالة الأسطر الفارغة تماماً للمطابقة الكاملة
+                // معالجة فواصل الأسطر مع الاحتفاظ ببنية الملف الأساسية
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                let lines = text.split('\n').filter(line => line.trim() !== '');
+                let lines = text.split('\n');
                 processedContent = lines.join('\r\n');
             };
             reader.readAsText(file, 'UTF-8');
@@ -252,7 +252,13 @@
         const count = parseInt(fileCountInput.value) || 1;
         
         for (let i = 1; i <= count; i++) {
-            const blob = new Blob([processedContent], { type: 'text/plain;charset=utf-8' });
+            // إضافة فواصل أسطر إضافية تختلف مع كل نسخة لتغيير البصمة وجعلها مقبولة في مدد
+            let modifiedContent = processedContent;
+            for (let j = 0; j < i; j++) {
+                modifiedContent += '\r\n';
+            }
+
+            const blob = new Blob([modifiedContent], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
